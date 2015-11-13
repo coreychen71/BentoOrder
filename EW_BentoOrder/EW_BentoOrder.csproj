@@ -82,18 +82,21 @@
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuestionPepoleNum.cs">
+    <Compile Include="PGB.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="QuestionPepoleNum.Designer.cs">
-      <DependentUpon>QuestionPepoleNum.cs</DependentUpon>
+    <Compile Include="PGB.Designer.cs">
+      <DependentUpon>PGB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BentoOrder.resx">
       <DependentUpon>BentoOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PGB.resx">
+      <DependentUpon>PGB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -104,9 +107,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="QuestionPepoleNum.resx">
-      <DependentUpon>QuestionPepoleNum.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

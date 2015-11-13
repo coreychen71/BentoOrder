@@ -2096,6 +2096,14 @@ namespace EW_BentoOrder
                 {
                     excel.Cells[1, i + 1] = dgvReferOrderAll.Columns[i].HeaderText;
                 }
+
+                PGB pgb = new PGB();
+                pgb.progressBar1.Minimum = 1;
+                pgb.progressBar1.Maximum = dgvReferOrderAll.Rows.Count;
+                pgb.progressBar1.Step = 1;
+                pgb.Show();
+                pgb.progressBar1.PerformStep();
+                
                 //把DataGridView資料寫到Excel
                 for (int i = 0; i < dgvReferOrderAll.Rows.Count - 1; i++)
                 {
