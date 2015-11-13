@@ -22,6 +22,8 @@ namespace EW_BentoOrder
         SqlConnection OpenSqlCon = new SqlConnection("server=ERP;database=EW;uid=JSIS;pwd=JSIS");
         SqlConnection OpensqlConME = new SqlConnection("server=EWNAS;database=ME;uid=me;pwd=2dae5na");
         SqlCommand SqlComm = new SqlCommand();
+        //後續要將CheckBox.Item的多餘字元移除
+        string clear = "ACDEFGILMQSTPR0123456789";
 
         private void txtNum_keyPress(object sender, KeyPressEventArgs e)
         {
@@ -45,27 +47,30 @@ namespace EW_BentoOrder
             txtCompanyCellPhone.ReadOnly = true;
             btnBentoTelChangeSave.Enabled = false;
             btnSavePrice.Enabled = false;
-            SqlComm.CommandText = "select distinct DepartId from HPSdEmpInfo";
+            SqlComm.CommandText = "select distinct HPSdEmpInfo.DepartId,HPSdDepartTree.DepartName from HPSdEmpInfo," +
+                "HPSdDepartTree where HPSdEmpInfo.DepartId = HPSdDepartTree.DepartId and HPSdDepartTree.DepartId " +
+                "not in ('EF')";
             SqlDataAdapter DepartId = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
             //Create new rows for dpid.tables
             DataRow dr = dpid.Tables["DepartId"].NewRow();
-            //建立dr[0]的資料為請選擇
-            dr[0] = "請選擇";
-            //將dr插入到dpid.tables.rows的第一列
-            dpid.Tables["DepartId"].Rows.InsertAt(dr, 0);
-            cboDepart.DataSource = dpid.Tables["DepartId"];
-            cboDepart.DisplayMember = "DepartId";
+            //設定dr的資料
+            dr["DepartId"] = "AA";
+            dr["DepartName"] = "請選擇";
+            //將dr插入到dpid.Tables["DepartId"].Rows的第一列
+            dpid.Tables["DepartId"].Rows.InsertAt(dr,0);
+            cboDepart.DataSource = dpid.Tables["Departid"];
+            cboDepart.DisplayMember = "DepartName";
             //設定cboDpname為唯讀且不可輸入新值
             cboDepart.DropDownStyle = ComboBoxStyle.DropDownList;
             //將tpOrderRefer頁面的ComboBox讀入部門別
             //此ComboBox的DataSource要用Tables的Copy，才不會導致同資料來源的二個頁面的ComboBox連作動
             cboSelectDepartid.DataSource = dpid.Tables["DepartId"].Copy();
-            cboSelectDepartid.DisplayMember = "DepartId";
+            cboSelectDepartid.DisplayMember = "DepartName";
             cboSelectDepartid.DropDownStyle = ComboBoxStyle.DropDownList;
             cboSelectDepart.DataSource = dpid.Tables["DepartId"].Copy();
-            cboSelectDepart.DisplayMember = "DepartId";
+            cboSelectDepart.DisplayMember = "DepartName";
             cboSelectDepart.DropDownStyle = ComboBoxStyle.DropDownList;
             OpenSqlCon.Close();
             SqlComm.CommandText = "select Name,Tel,CellPhone,replace( convert(varchar(20), cast "+
@@ -103,9 +108,14 @@ namespace EW_BentoOrder
             }
             else
             {
-                //若選了部門別，則帶出該部門仍在職中的人員姓名
-                SqlComm.CommandText = "select EmpName from HPSdEmpInfo where DepartId='" + cboDepart.Text +
-                    "' and EmpStatus='1'";
+                //先用選到的部門中文去撈部門代號
+                SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" + cboDepart.Text + "'";
+                SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                DataSet Read = new DataSet();
+                Load.Fill(Read, "DepartId");
+                //再用部門代號撈出仍在職中的人員工號、姓名
+                SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where DepartId='" +
+                    Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpStatus='1'";
                 SqlDataAdapter ReadEmpInfo = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                 DataSet HPSdEmpInfo = new DataSet();
                 ReadEmpInfo.Fill(HPSdEmpInfo, "EmpInfo");
@@ -113,7 +123,8 @@ namespace EW_BentoOrder
                 chklstName.Items.Clear();
                 for (int i = 0; i < A; i++)
                 {
-                    chklstName.Items.Add(HPSdEmpInfo.Tables["EmpInfo"].Rows[i][0].ToString());
+                    chklstName.Items.Add(HPSdEmpInfo.Tables["EmpInfo"].Rows[i][0].ToString().Trim()+
+                        HPSdEmpInfo.Tables["EmpInfo"].Rows[i][1].ToString().Trim());
                 }
                 OpenSqlCon.Close();
             }
@@ -176,6 +187,10 @@ namespace EW_BentoOrder
                     {
                         num1 = "3";
                     }
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" + cboDepart.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "DepartId");
                     //先檢查今日該部門人員是否已報過餐別
                     int a = chklstName.CheckedItems.Count;
                     int q;
@@ -184,17 +199,20 @@ namespace EW_BentoOrder
                     for (q = 0; q < a; q++)
                     {
                         OpensqlConME.Close();
-                        name = chklstName.CheckedItems[q].ToString();
-                        SqlComm.CommandText = "select * from BentoOrder where (Date >= '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") +
-                                "' and Date <='" + DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
-                                cboDepart.Text.ToString() + "' and EmpName='" + chklstName.CheckedItems[q].ToString() +
-                                "' and (OrderStatus=" + num1.ToString() + " and VegetableFood in (0,1))";
+                        name = chklstName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray());
+                        SqlComm.CommandText = "select * from BentoOrder where (Date >= '" +
+                            DateTime.Now.ToString("yyyy-MM-dd 00:00:00") +"' and Date <='" +
+                            DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
+                            chklstName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
+                            "' and OrderStatus=" + num1.ToString() + " and (VegetableFood in (0,1))";
                         SqlComm.Connection = OpensqlConME;
                         OpensqlConME.Open();
                         check = SqlComm.ExecuteReader();
                         if (check.HasRows)
                         {
-                            MessageBox.Show("該人員[" + name + "]今日已報過您選擇的餐別！", "注意", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                            MessageBox.Show("該人員[" + name + "]今日已報過您選擇的餐別！", "注意", MessageBoxButtons.OK,
+                                MessageBoxIcon.Hand);
                             OpensqlConME.Close();
                             return;
                         }
@@ -208,14 +226,14 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstName.CheckedItems[i].ToString() + "'";
+                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
                             SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                                 "VegetableFood,OrderPeople,OrderDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") + "','" +
                                 ReadUser.Tables["ReadUser"].Rows[0][0].ToString() + "','" + ReadUser.Tables["ReadUser"].Rows[0][1].ToString() +
-                                "','" + cboDepart.Text.ToString() + "',1," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
+                                "','" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "',1," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
                                 "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                             SqlComm.Connection = OpensqlConME;
                             SqlComm.ExecuteNonQuery();
@@ -234,14 +252,14 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstName.CheckedItems[i].ToString() + "'";
+                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
                             SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                                 "VegetableFood,OrderPeople,OrderDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") + "','" +
                                 ReadUser.Tables["ReadUser"].Rows[0][0].ToString() + "','" + ReadUser.Tables["ReadUser"].Rows[0][1].ToString() +
-                                "','" + cboDepart.Text.ToString() + "',2," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
+                                "','" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "',2," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
                                 "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                             SqlComm.Connection = OpensqlConME;
                             SqlComm.ExecuteNonQuery();
@@ -260,14 +278,14 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstName.CheckedItems[i].ToString() + "'";
+                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
                             SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                                 "VegetableFood,OrderPeople,OrderDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") + "','" +
                                 ReadUser.Tables["ReadUser"].Rows[0][0].ToString() + "','" + ReadUser.Tables["ReadUser"].Rows[0][1].ToString() +
-                                "','" + cboDepart.Text.ToString() + "',3," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
+                                "','" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "',3," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
                                 "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                             SqlComm.Connection = OpensqlConME;
                             SqlComm.ExecuteNonQuery();
@@ -417,9 +435,15 @@ namespace EW_BentoOrder
             }
             else
             {
+                SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                    cboSelectDepartid.Text + "'";
+                SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                DataSet Read1 = new DataSet();
+                Load.Fill(Read1, "DepartId");
                 SqlComm.CommandText = "select EmpName,OrderStatus,VegetableFood,OrderPeople from BentoOrder " +
-                    "where DepartId='" + cboSelectDepartid.Text.ToString() + "' and OrderStatus=" + num + " and " +
-                    "Date between '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and '" +
+                    "where DepartId='" + Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString() +
+                    "' and OrderStatus=" + num + " and " + "Date between '" +
+                    DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and '" +
                     DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "' Order by EmpName";
                 SqlDataAdapter Read = new SqlDataAdapter(SqlComm.CommandText, OpensqlConME);
                 DataSet Data = new DataSet();
@@ -529,10 +553,15 @@ namespace EW_BentoOrder
                 }
                 else
                 {
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                    cboSelectDepartid.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read1 = new DataSet();
+                    Load.Fill(Read1, "DepartId");
                     SqlComm.CommandText = "update BentoOrder set OrderStatus=0,UpdateDate='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
                         "',UpdatePeople='" + lblUserNameShow.Text + "' where Date between '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") +
                         "' and '" + DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "' and EmpName='" + dgvBentoDataShow.CurrentRow.Cells["姓名"].Value.ToString() +
-                        "' and OrderStatus=" + num;
+                        "' and OrderStatus=" + num + " and DepartId='" +Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString()  + "'";
                     if (MessageBox.Show("您確定要取消【" + dgvBentoDataShow.CurrentRow.Cells[0].Value.ToString() + "】" + order + "訂餐？",
                         "確認訊息", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
                     {
@@ -544,7 +573,7 @@ namespace EW_BentoOrder
                             OpensqlConME.Close();
                             OpensqlConME.Open();
                             SqlComm.CommandText = "select EmpName,OrderStatus,VegetableFood,OrderPeople from BentoOrder " +
-                                "where DepartId='" + cboSelectDepartid.Text.ToString() + "' and OrderStatus=" + num + " and " +
+                                "where DepartId='" + Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and OrderStatus=" + num + " and " +
                                 "Date between '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and '" +
                             DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "' Order by EmpName";
                             SqlDataAdapter Read = new SqlDataAdapter(SqlComm.CommandText, OpensqlConME);
@@ -896,7 +925,12 @@ namespace EW_BentoOrder
                     }
                     else
                     {
-                        string depart = cboSelectDepart.Text;
+                        SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                            cboSelectDepart.Text + "'";
+                        SqlDataAdapter Load1 = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                        DataSet Read1 = new DataSet();
+                        Load1.Fill(Read1, "DepartId");
+                        string depart = Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString();
                         SqlComm.CommandText = "select Convert(char(10),Date,20) as Date,count(Date) as num into #TT " +
                             "from BentoOrder where Date between '" + dtpStartDate.Value.ToString("yyyy-MM-dd") +
                             "' and '" + dtpEndDate.Value.ToString("yyyy-MM-dd") + "' and OrderStatus in (1,2,3) and " +
@@ -946,7 +980,7 @@ namespace EW_BentoOrder
                         }
                         else
                         {
-                            MessageBox.Show("您查詢的日期區間，查無部門[" + depart.Trim() + "]的訂餐紀錄！", "訊息", 
+                            MessageBox.Show("您查詢的日期區間，查無部門[" + cboSelectDepart.Text.Trim() + "]的訂餐紀錄！", "訊息", 
                                 MessageBoxButtons.OK,MessageBoxIcon.Asterisk);
                         }
                     }
@@ -1077,10 +1111,15 @@ namespace EW_BentoOrder
                 }
                 else
                 {
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                    cboSelectDepartid.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read1 = new DataSet();
+                    Load.Fill(Read1, "DepartId");
                     SqlComm.CommandText = "update BentoOrder set OrderStatus=0,UpdateDate='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
                         "',UpdatePeople='" + lblUserNameShow.Text + "' where Date between '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") +
                         "' and '" + DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "' and EmpName='" + dgvBentoDataShow.CurrentRow.Cells["姓名"].Value.ToString() +
-                        "' and OrderStatus=" + num;
+                        "' and OrderStatus=" + num + " and DepartId='" + Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "'";
                     if (MessageBox.Show("您確定要取消【" + dgvBentoDataShow.CurrentRow.Cells[0].Value.ToString() + "】" + order + "訂餐？",
                         "確認訊息", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
                     {
@@ -1093,7 +1132,7 @@ namespace EW_BentoOrder
                             OpensqlConME.Close();
                             OpensqlConME.Open();
                             SqlComm.CommandText = "select EmpName,OrderStatus,VegetableFood,OrderPeople from BentoOrder " +
-                                "where DepartId='" + cboSelectDepartid.Text.ToString() + "' and OrderStatus=" + num + " and " +
+                                "where DepartId='" + Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and OrderStatus=" + num + " and " +
                                 "Date between '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and '" +
                                 DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "' Order by EmpName";
                             SqlDataAdapter Read = new SqlDataAdapter(SqlComm.CommandText, OpensqlConME);
@@ -1343,7 +1382,12 @@ namespace EW_BentoOrder
                     }
                     else
                     {
-                        string depart = cboSelectDepart.Text;
+                        SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                            cboSelectDepart.Text + "'";
+                        SqlDataAdapter Load1 = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                        DataSet Read1 = new DataSet();
+                        Load1.Fill(Read1, "DepartId");
+                        string depart = Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString();
                         SqlComm.CommandText = "select Convert(char(10),Date,20) as Date,count(Date) as num into #TT " +
                             "from BentoOrder where Date between '" + dtpStartDate.Value.ToString("yyyy-MM-dd") +
                             "' and '" + dtpEndDate.Value.ToString("yyyy-MM-dd") + "' and OrderStatus=1 and DepartId='" +
@@ -1393,7 +1437,7 @@ namespace EW_BentoOrder
                         }
                         else
                         {
-                            MessageBox.Show("您查詢的日期區間，查無部門[" + depart.Trim() + "]的訂餐紀錄！", "訊息",
+                            MessageBox.Show("您查詢的日期區間，查無部門[" + cboSelectDepart.Text.Trim() + "]的訂餐紀錄！", "訊息",
                                 MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         }
                     }
@@ -1580,7 +1624,12 @@ namespace EW_BentoOrder
                     }
                     else
                     {
-                        string depart = cboSelectDepart.Text;
+                        SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                            cboSelectDepart.Text + "'";
+                        SqlDataAdapter Load1 = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                        DataSet Read1 = new DataSet();
+                        Load1.Fill(Read1, "DepartId");
+                        string depart = Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString();
                         SqlComm.CommandText = "select Convert(char(10),Date,20) as Date,count(Date) as num into #TT from BentoOrder where Date between '" +
                             dtpStartDate.Value.ToString("yyyy-MM-dd") + "' and '" + dtpEndDate.Value.ToString("yyyy-MM-dd") +
                             "' and OrderStatus=2 and DepartId='" + depart + "' and VegetableFood=0 group by Date " +
@@ -1628,7 +1677,7 @@ namespace EW_BentoOrder
                         }
                         else
                         {
-                            MessageBox.Show("您查詢的日期區間，查無部門[" + depart.Trim() + "]的訂餐紀錄！", "訊息",
+                            MessageBox.Show("您查詢的日期區間，查無部門[" + cboSelectDepart.Text.Trim() + "]的訂餐紀錄！", "訊息",
                                 MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         }
                     }
@@ -1815,7 +1864,12 @@ namespace EW_BentoOrder
                     }
                     else
                     {
-                        string depart = cboSelectDepart.Text;
+                        SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                            cboSelectDepart.Text + "'";
+                        SqlDataAdapter Load1 = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                        DataSet Read1 = new DataSet();
+                        Load1.Fill(Read1, "DepartId");
+                        string depart = Read1.Tables["DepartId"].Rows[0]["DepartId"].ToString();
                         SqlComm.CommandText = "select Convert(char(10),Date,20) as Date,count(Date) as num into #TT from BentoOrder where Date between '" +
                             dtpStartDate.Value.ToString("yyyy-MM-dd") + "' and '" + dtpEndDate.Value.ToString("yyyy-MM-dd") +
                             "' and OrderStatus=3 and DepartId='" + depart + "' and VegetableFood=0 group by Date " +
@@ -1863,7 +1917,7 @@ namespace EW_BentoOrder
                         }
                         else
                         {
-                            MessageBox.Show("您查詢的日期區間，查無部門[" + depart.Trim() + "]的訂餐紀錄！", "訊息",
+                            MessageBox.Show("您查詢的日期區間，查無部門[" + cboSelectDepart.Text.Trim() + "]的訂餐紀錄！", "訊息",
                                 MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         }
                     }
@@ -1905,6 +1959,10 @@ namespace EW_BentoOrder
                 {
                     num1 = "3";
                 }
+                SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" + cboDepart.Text + "'";
+                SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                DataSet Read = new DataSet();
+                Load.Fill(Read, "DepartId");
                 //先檢查今日該部門人員是否已報過餐別
                 int a = chklstName.CheckedItems.Count;
                 int q;
@@ -1913,11 +1971,13 @@ namespace EW_BentoOrder
                 for (q = 0; q < a; q++)
                 {
                     OpensqlConME.Close();
-                    name = chklstName.CheckedItems[q].ToString();
-                    SqlComm.CommandText = "select * from BentoOrder where (Date >= '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") +
-                            "' and Date <='" + DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
-                            cboDepart.Text.ToString() + "' and EmpName='" + chklstName.CheckedItems[q].ToString() +
-                            "' and (OrderStatus=" + num1.ToString() + " and VegetableFood in (0,1))";
+                    name = chklstName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray());
+                    SqlComm.CommandText = "select * from BentoOrder where (Date >= '" +
+                            DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and Date <='" +
+                            DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
+                            chklstName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
+                            "' and OrderStatus=" + num1.ToString() + " and (VegetableFood in (0,1))";
                     SqlComm.Connection = OpensqlConME;
                     OpensqlConME.Open();
                     check = SqlComm.ExecuteReader();
@@ -1944,7 +2004,7 @@ namespace EW_BentoOrder
                         SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                             "VegetableFood,OrderPeople,OrderDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") + "','" +
                             ReadUser.Tables["ReadUser"].Rows[0][0].ToString() + "','" + ReadUser.Tables["ReadUser"].Rows[0][1].ToString() +
-                            "','" + cboDepart.Text.ToString() + "',1," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
+                            "','" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "',1," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
                             "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                         SqlComm.Connection = OpensqlConME;
                         SqlComm.ExecuteNonQuery();
@@ -1963,14 +2023,14 @@ namespace EW_BentoOrder
                     for (int i = 0; i < A; i++)
                     {
                         SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                            chklstName.CheckedItems[i].ToString() + "'";
+                            chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
                         SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                         DataSet ReadUser = new DataSet();
                         ReadNI.Fill(ReadUser, "ReadUser");
                         SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                             "VegetableFood,OrderPeople,OrderDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") + "','" +
                             ReadUser.Tables["ReadUser"].Rows[0][0].ToString() + "','" + ReadUser.Tables["ReadUser"].Rows[0][1].ToString() +
-                            "','" + cboDepart.Text.ToString() + "',2," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
+                            "','" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "',2," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
                             "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                         SqlComm.Connection = OpensqlConME;
                         SqlComm.ExecuteNonQuery();
@@ -1996,7 +2056,7 @@ namespace EW_BentoOrder
                         SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                             "VegetableFood,OrderPeople,OrderDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") + "','" +
                             ReadUser.Tables["ReadUser"].Rows[0][0].ToString() + "','" + ReadUser.Tables["ReadUser"].Rows[0][1].ToString() +
-                            "','" + cboDepart.Text.ToString() + "',3," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
+                            "','" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "',3," + num2.ToString() + ",'" + lblUserNameShow.Text.ToString() +
                             "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                         SqlComm.Connection = OpensqlConME;
                         SqlComm.ExecuteNonQuery();
@@ -2021,8 +2081,8 @@ namespace EW_BentoOrder
                     MessageBox.Show("沒有可滙出的資料！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     return;
                 }
-                //設定滙出後的存檔路徑(儲存在桌面)
                 string Date = DateTime.Now.ToString("yyyy-MM-dd");
+                //設定滙出後的存檔路徑(儲存在桌面)
                 string SaveFilePath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) +
                     @"\BentoReport_" + Date + ".xls";
                 //new 出一個Excel
@@ -2330,11 +2390,28 @@ namespace EW_BentoOrder
                     "('EG','ES','EM','EA','EE','ER','EQ','MM','EL','EP','ET','EI','FF','LF','DF','CF') " +
                     "and VegetableFood = 1 and Date between '" + DateTime.Now.ToString("yyyy-MM-dd") + "' and " +
                     "'" + DateTime.Now.ToString("yyyy-MM-dd") + "' group by DepartId " +
-                    "select* from #AA left join #BB on #AA.部門=#BB.部門";
+                    "select * from #AA left join #BB on #AA.部門=#BB.部門";
                 SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpensqlConME);
                 DataSet Read = new DataSet();
                 Load.Fill(Read, "A");
                 OpensqlConME.Close();
+                //宣告部門字串陣列
+                string[] depart = {"總經理室","業務部","管理部","財務部","工程部","製造研發部","品保部","廠長室","壓合課",
+                    "生管課","測試課","品檢課","乾膜課","防焊課","鑽孔課","成型課" };
+                //宣告部門ID字串陣列，注意：初始值的排序需要與部門字串一樣
+                string[] departid = {"EG","ES","EM","EA","EE","ER","EQ","MM","EL","EP","ET","EI","FF","LF","DF",
+                    "CF" };
+                //用迴圈下去跑字串比對，將符合條件的欄位部門ID值轉成中文部門別
+                for (int i=0;i<Read.Tables["A"].Rows.Count;i++)
+                {
+                    for (int q = 0; q < departid.Count(); q++)
+                    {
+                        if (Read.Tables["A"].Rows[i]["部門"].ToString().Trim() == departid[q])
+                        {
+                            Read.Tables["A"].Rows[i]["部門"] = depart[q];
+                        }
+                    }
+                }
                 dgvBentoDataShow.Columns.Clear();
                 dgvBentoDataShow.DataSource = Read.Tables["A"];
                 dgvBentoDataShow.Columns[2].Visible = false;

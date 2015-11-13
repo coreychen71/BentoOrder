@@ -56,6 +56,7 @@
             this.rdoPmOrder = new System.Windows.Forms.RadioButton();
             this.rdoAmOrder = new System.Windows.Forms.RadioButton();
             this.tpOrderRefer = new System.Windows.Forms.TabPage();
+            this.btnDepartOrder = new System.Windows.Forms.Button();
             this.btnNewPeople1 = new System.Windows.Forms.Button();
             this.lblInputName = new System.Windows.Forms.Label();
             this.txtInputName = new System.Windows.Forms.TextBox();
@@ -109,7 +110,6 @@
             this.lblUserName = new System.Windows.Forms.Label();
             this.lblUserNameShow = new System.Windows.Forms.Label();
             this.tmrDateTime = new System.Windows.Forms.Timer(this.components);
-            this.btnDepartOrder = new System.Windows.Forms.Button();
             this.tabBentoOrder.SuspendLayout();
             this.tpEveryDayOrder.SuspendLayout();
             this.tpOrderRefer.SuspendLayout();
@@ -432,6 +432,19 @@
             this.tpOrderRefer.TabIndex = 1;
             this.tpOrderRefer.Text = "每日訂餐查詢、取消";
             this.tpOrderRefer.UseVisualStyleBackColor = true;
+            // 
+            // btnDepartOrder
+            // 
+            this.btnDepartOrder.BackColor = System.Drawing.Color.DarkViolet;
+            this.btnDepartOrder.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnDepartOrder.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnDepartOrder.Location = new System.Drawing.Point(475, 99);
+            this.btnDepartOrder.Name = "btnDepartOrder";
+            this.btnDepartOrder.Size = new System.Drawing.Size(120, 35);
+            this.btnDepartOrder.TabIndex = 61;
+            this.btnDepartOrder.Text = "各課報餐統計";
+            this.btnDepartOrder.UseVisualStyleBackColor = false;
+            this.btnDepartOrder.Click += new System.EventHandler(this.btnDepartOrder_Click);
             // 
             // btnNewPeople1
             // 
@@ -1011,19 +1024,6 @@
             // 
             this.tmrDateTime.Tick += new System.EventHandler(this.tmrDateTime_Tick);
             // 
-            // btnDepartOrder
-            // 
-            this.btnDepartOrder.BackColor = System.Drawing.Color.DarkViolet;
-            this.btnDepartOrder.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnDepartOrder.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnDepartOrder.Location = new System.Drawing.Point(475, 99);
-            this.btnDepartOrder.Name = "btnDepartOrder";
-            this.btnDepartOrder.Size = new System.Drawing.Size(120, 35);
-            this.btnDepartOrder.TabIndex = 61;
-            this.btnDepartOrder.Text = "各課報餐統計";
-            this.btnDepartOrder.UseVisualStyleBackColor = false;
-            this.btnDepartOrder.Click += new System.EventHandler(this.btnDepartOrder_Click);
-            // 
             // BentoOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1039,7 +1039,7 @@
             this.MaximizeBox = false;
             this.Name = "BentoOrder";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "長鴻電子-每日報餐登記表 v1.1";
+            this.Text = "長鴻電子-每日報餐登記表 v2.0";
             this.Load += new System.EventHandler(this.BentoOrder_Load);
             this.tabBentoOrder.ResumeLayout(false);
             this.tpEveryDayOrder.ResumeLayout(false);
