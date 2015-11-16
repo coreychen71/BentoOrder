@@ -719,7 +719,8 @@ namespace EW_BentoOrder
                 {
                     for (int x = 0; x < Depart.Tables["A"].Rows.Count; x++)
                     {
-                        if (Depart.Tables["B"].Rows[i][0].ToString() == Depart.Tables["A"].Rows[x][0].ToString())
+                        if (Depart.Tables["B"].Rows[i][0].ToString().Trim() == Depart.Tables["A"].Rows[x][0].ToString()
+                            .Trim())
                         {
                             C.Rows[x].Delete();
                         }
@@ -1997,7 +1998,7 @@ namespace EW_BentoOrder
                     for (int i = 0; i < A; i++)
                     {
                         SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                            chklstName.CheckedItems[i].ToString() + "'";
+                            chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
                         SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                         DataSet ReadUser = new DataSet();
                         ReadNI.Fill(ReadUser, "ReadUser");
@@ -2091,22 +2092,23 @@ namespace EW_BentoOrder
                 excel.Visible = false;
                 //新增加一工作簿
                 excel.Application.Workbooks.Add(true);
+
+                PGB pgb = new PGB();
+                pgb.progressBar1.Minimum = 0;
+                pgb.progressBar1.Maximum = dgvReferOrderAll.Rows.Count - 1;
+                pgb.progressBar1.Step = 1;
+                pgb.progressBar1.Value = 0;
+                pgb.Show();
+
                 //寫入欄位名稱
                 for (int i = 0; i < dgvReferOrderAll.Columns.Count; i++)
                 {
                     excel.Cells[1, i + 1] = dgvReferOrderAll.Columns[i].HeaderText;
                 }
-
-                PGB pgb = new PGB();
-                pgb.progressBar1.Minimum = 1;
-                pgb.progressBar1.Maximum = dgvReferOrderAll.Rows.Count;
-                pgb.progressBar1.Step = 1;
-                pgb.Show();
-                pgb.progressBar1.PerformStep();
-                
                 //把DataGridView資料寫到Excel
                 for (int i = 0; i < dgvReferOrderAll.Rows.Count - 1; i++)
                 {
+                    pgb.progressBar1.Value++;
                     for (int j = 0; j < dgvReferOrderAll.Columns.Count; j++)
                     {
                         if (dgvReferOrderAll[j, i].ValueType == typeof(string))
@@ -2244,6 +2246,7 @@ namespace EW_BentoOrder
                 excel.AlertBeforeOverwriting = false;
                 //將檔案儲存到SaveFile指定的位置
                 excel.ActiveWorkbook.SaveCopyAs(SaveFilePath);
+                pgb.Close();
                 MessageBox.Show("已成功滙出Excel檔！" + Environment.NewLine + "檔案儲存在您電腦的桌面，檔名：BentoReport_" +
                     Date + ".xls", "完成", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -2295,11 +2298,17 @@ namespace EW_BentoOrder
                         num = 3;
                         Order = "宵夜";
                     }
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" + 
+                        cboSelectDepartid.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "DepartId");
                     SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                             "VegetableFood,OrderPeople,OrderDate)" + " values ('" + DateTime.Now.ToString
-                            ("yyyy-MM-dd HH:mm:ss") + "','EW000'," + "'" + txtInputName.Text + "','" + cboSelectDepartid
-                            .Text + "','" + num.ToString() + "',0,'" + lblUserNameShow.Text.ToString() + "','" +
-                            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
+                            ("yyyy-MM-dd HH:mm:ss") + "','EW000'," + "'" + txtInputName.Text + "','" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "','" + num.ToString() +
+                            "',0,'" + lblUserNameShow.Text.ToString() + "','" + DateTime.Now.ToString
+                            ("yyyy-MM-dd HH:mm:ss") + "')";
                     SqlComm.Connection = OpensqlConME;
                     OpensqlConME.Open();
                     int Reply=SqlComm.ExecuteNonQuery();
@@ -2348,11 +2357,17 @@ namespace EW_BentoOrder
                         num = 3;
                         Order = "宵夜";
                     }
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" + 
+                        cboSelectDepartid.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "DepartId");
                     SqlComm.CommandText = "insert into BentoOrder (Date,EmpId,EmpName,DepartId,OrderStatus," +
                             "VegetableFood,OrderPeople,OrderDate)" + " values ('" + DateTime.Now.ToString
-                            ("yyyy-MM-dd HH:mm:ss") + "','EW000'," + "'" + txtInputName.Text + "','" + cboSelectDepartid
-                            .Text + "','" + num.ToString() + "',1,'" + lblUserNameShow.Text.ToString() + "','" +
-                            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
+                            ("yyyy-MM-dd HH:mm:ss") + "','EW000'," + "'" + txtInputName.Text + "','" + 
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim()+ "','" + num.ToString() +
+                            "',1,'" + lblUserNameShow.Text.ToString() + "','" + DateTime.Now.ToString
+                            ("yyyy-MM-dd HH:mm:ss") + "')";
                     SqlComm.Connection = OpensqlConME;
                     OpensqlConME.Open();
                     int Reply = SqlComm.ExecuteNonQuery();

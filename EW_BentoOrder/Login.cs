@@ -40,7 +40,7 @@ namespace EW_BentoOrder
                 BentoOrder bo = new BentoOrder();
                 ReadName.Read();
                 bo.lblUserNameShow.Text = ReadName["UserName"].ToString();
-                if(ReadName["unitid"].ToString()==EM | ReadName["unitid"].ToString() == EA)
+                if(ReadName["unitid"].ToString().Trim()== EM | ReadName["unitid"].ToString().Trim() == EA)
                 {
                     bo.btnSanitary.Enabled = true;
                     bo.btnBentoTelChange.Enabled = true;

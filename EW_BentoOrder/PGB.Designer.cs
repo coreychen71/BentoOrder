@@ -48,9 +48,10 @@
             this.progressBar1.Location = new System.Drawing.Point(12, 45);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(360, 23);
+            this.progressBar1.Step = 1;
             this.progressBar1.TabIndex = 1;
             // 
-            // ProgressBar
+            // PGB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -58,7 +59,10 @@
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.lblExplain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ProgressBar";
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "PGB";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "資料滙出中.....";
             this.ResumeLayout(false);
             this.PerformLayout();
