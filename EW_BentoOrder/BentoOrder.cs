@@ -17,12 +17,13 @@ namespace EW_BentoOrder
         public BentoOrder()
         {
             InitializeComponent();
+            lblWorkPeople_Time.ForeColor = Color.Red;
         }
 
         SqlConnection OpenSqlCon = new SqlConnection("server=ERP;database=EW;uid=JSIS;pwd=JSIS");
         SqlConnection OpensqlConME = new SqlConnection("server=EWNAS;database=ME;uid=me;pwd=2dae5na");
         SqlCommand SqlComm = new SqlCommand();
-        //後續要將CheckBox.Item的多餘字元移除
+        //宣告後續要將CheckBox.Item的多餘字元移除的字串
         string clear = "ACDEFGILMQSTPR0123456789";
 
         private void txtNum_keyPress(object sender, KeyPressEventArgs e)
@@ -72,6 +73,9 @@ namespace EW_BentoOrder
             cboSelectDepart.DataSource = dpid.Tables["DepartId"].Copy();
             cboSelectDepart.DisplayMember = "DepartName";
             cboSelectDepart.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboSelectWorkPeopleDepart.DataSource = dpid.Tables["DepartId"].Copy();
+            cboSelectWorkPeopleDepart.DisplayMember = "DepartName";
+            cboSelectWorkPeopleDepart.DropDownStyle = ComboBoxStyle.DropDownList;
             OpenSqlCon.Close();
             SqlComm.CommandText = "select Name,Tel,CellPhone,replace( convert(varchar(20), cast "+
                 "(BentoPrice as money), 1) , '.00', '') as BentoPrice from BentoCompany";
@@ -2098,6 +2102,8 @@ namespace EW_BentoOrder
                 pgb.progressBar1.Maximum = dgvReferOrderAll.Rows.Count - 1;
                 pgb.progressBar1.Step = 1;
                 pgb.progressBar1.Value = 0;
+                pgb.progressBar1.ForeColor = Color.Pink;
+                pgb.progressBar1.Style = ProgressBarStyle.Continuous;
                 pgb.Show();
 
                 //寫入欄位名稱
@@ -2439,6 +2445,188 @@ namespace EW_BentoOrder
                 dgvBentoDataShow.DataSource = Read.Tables["A"];
                 dgvBentoDataShow.Columns[2].Visible = false;
             }
+        }
+
+        private void cboSelectWorkPeopleDepart_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboSelectWorkPeopleDepart.SelectedIndex == 0)
+            {
+                return;
+            }
+            else
+            {
+                //先用選到的部門中文去撈部門代號
+                SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                    cboSelectWorkPeopleDepart.Text + "'";
+                SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                DataSet Read = new DataSet();
+                Load.Fill(Read, "DepartId");
+                //再用部門代號撈出仍在職中的人員工號、姓名
+                SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where DepartId='" +
+                    Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpStatus='1'";
+                SqlDataAdapter ReadEmpInfo = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                DataSet HPSdEmpInfo = new DataSet();
+                ReadEmpInfo.Fill(HPSdEmpInfo, "EmpInfo");
+                int A = HPSdEmpInfo.Tables["EmpInfo"].Rows.Count;
+                chklstWorkPeopleName.Items.Clear();
+                for (int i = 0; i < A; i++)
+                {
+                    chklstWorkPeopleName.Items.Add(HPSdEmpInfo.Tables["EmpInfo"].Rows[i][0].ToString().Trim() +
+                        HPSdEmpInfo.Tables["EmpInfo"].Rows[i][1].ToString().Trim());
+                }
+                OpenSqlCon.Close();
+                RenewWorkPeople(cboSelectWorkPeopleDepart.Text);
+            }
+        }
+
+        private void btnSelectWorkPeopleAll_Click(object sender, EventArgs e)
+        {
+            int A = chklstWorkPeopleName.Items.Count;
+            for (int i = 0; i < A; i++)
+            {
+                chklstWorkPeopleName.SetItemChecked(i, true);
+            }
+        }
+
+        private void btnCancelWorkPeopleAll_Click(object sender, EventArgs e)
+        {
+            int A = chklstWorkPeopleName.Items.Count;
+            for (int i = 0; i < A; i++)
+            {
+                chklstWorkPeopleName.SetItemChecked(i, false);
+            }
+        }
+
+        private void btnWorkPeopleSend_Click(object sender, EventArgs e)
+        {
+            if(rdoClassAM.Checked==false & rdoClassPM.Checked==false)
+            {
+                MessageBox.Show("尚未選擇班別！", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            else if(cboSelectWorkPeopleDepart.SelectedIndex==0)
+            {
+                MessageBox.Show("尚未選擇部門！", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            else
+            {
+                string st1 = "21:00";
+                DateTime time = new DateTime();
+                time = DateTime.Now;
+                DateTime t1 = Convert.ToDateTime(st1);
+                if (time > t1)
+                {
+                    MessageBox.Show("已超過每日出勤登記時間！" + Environment.NewLine + "請洽詢管理部-人資專員。", "錯誤",
+                        MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                }
+                else
+                {
+                    int Classnum = 0;
+                    string Class = "";
+                    if(rdoClassAM.Checked==true)
+                    {
+                        Classnum = 1;
+                        Class = "早班";
+                    }
+                    else if(rdoClassPM.Checked==true)
+                    {
+                        Classnum = 2;
+                        Class = "晚班";
+                    }
+                    //先撈出選定部門的部門ID
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                        cboSelectWorkPeopleDepart.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "DepartId");
+                    //先檢查今日該部門人員是否已報過出勤
+                    int a = chklstWorkPeopleName.CheckedItems.Count;
+                    int q;
+                    string name = null;
+                    SqlDataReader check;
+                    for (q = 0; q < a; q++)
+                    {
+                        OpensqlConME.Close();
+                        name = chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray());
+                        SqlComm.CommandText = "select * from WorkPeople where (Date >= '" +
+                            DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and Date <='" +
+                            DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
+                            chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
+                            "'";
+                        SqlComm.Connection = OpensqlConME;
+                        OpensqlConME.Open();
+                        check = SqlComm.ExecuteReader();
+                        if (check.HasRows)
+                        {
+                            MessageBox.Show("該人員[" + name + "]今日已報過出勤！", "注意", MessageBoxButtons.OK,
+                                MessageBoxIcon.Hand);
+                            OpensqlConME.Close();
+                            return;
+                        }
+
+                    }
+                    OpensqlConME.Close();
+                    OpensqlConME.Open();
+                    int A = chklstWorkPeopleName.CheckedItems.Count;
+                    for (int i = 0; i < A; i++)
+                    {
+                        SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
+                            chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                        SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                        DataSet ReadUser = new DataSet();
+                        ReadNI.Fill(ReadUser, "ReadUser");
+                        SqlComm.CommandText = "insert into WorkPeople (Date,EmpId,EmpName,DepartId,Class," +
+                            "RegisterPeople,RegisterDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") + "','" +
+                            ReadUser.Tables["ReadUser"].Rows[0][0].ToString().Trim() + "','" +
+                            ReadUser.Tables["ReadUser"].Rows[0][1].ToString().Trim() + "','" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "','" +
+                            Classnum + "','" + lblUserNameShow.Text.ToString() + "','" +
+                            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
+                        SqlComm.Connection = OpensqlConME;
+                        SqlComm.ExecuteNonQuery();
+                    }
+                    MessageBox.Show("部門：" + cboSelectWorkPeopleDepart.Text.ToString() + Environment.NewLine +
+                        Class + "今日出勤人數共 " + chklstWorkPeopleName.CheckedItems.Count + "位！" + Environment.NewLine +
+                        "每日出勤登記已完成！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    OpenSqlCon.Close();
+                    OpensqlConME.Close();
+                    //RenewWorkPeople(cboSelectWorkPeopleDepart.Text);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 重新讀取已報出勤人員
+        /// </summary>
+        /// <param name="departname">ComboBox.部門</param>
+        private void RenewWorkPeople(string departname)
+        {
+            string SQLCon = "server=ERP;database=EW;uid=JSIS;pwd=JSIS";
+            string SQLComm= "select DepartId from HPSdDepartTree where DepartName='" + cboSelectWorkPeopleDepart.Text +
+                "'";
+            DataSet Read = new DataSet();
+            using (SqlConnection sqlcon = new SqlConnection(SQLCon))
+            {
+                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
+                {
+                    Load.Fill(Read, "DepartId");
+                }
+            }
+            SQLCon = "server=EWNAS;database=ME;uid=me;pwd=2dae5na";
+            SQLComm = "select Date as '日期',EmpId as '工號',EmpName as '姓名',Class as '班別' from " +
+                    "WorkPeople where DepartId='" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() +
+                    "' and Class in (1,2) and Date between '" + DateTime.Now.ToString("yyyy-MM-dd") +
+                    " and '" + DateTime.Now.ToString("yyyy-MM-dd") + "' order by Date,Class asc";
+            using (SqlConnection sqlcon = new SqlConnection(SQLCon))
+            {
+                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
+                {
+                    Load.Fill(Read, "WorkPeople");
+                }
+            }
+            dgvWorkPeopleShow.DataSource = Read.Tables["WorkPeople"];
         }
     }
 }

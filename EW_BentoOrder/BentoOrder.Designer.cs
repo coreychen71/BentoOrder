@@ -105,17 +105,32 @@
             this.lblSelectReferDate = new System.Windows.Forms.Label();
             this.dtpEndDate = new System.Windows.Forms.DateTimePicker();
             this.dtpStartDate = new System.Windows.Forms.DateTimePicker();
+            this.tpWorkPeople = new System.Windows.Forms.TabPage();
+            this.btnWorkPeopleSend = new System.Windows.Forms.Button();
+            this.btnSelectWorkPeopleAll = new System.Windows.Forms.Button();
+            this.btnCancelWorkPeopleAll = new System.Windows.Forms.Button();
+            this.cboSelectWorkPeopleDepart = new System.Windows.Forms.ComboBox();
+            this.dgvWorkPeopleShow = new System.Windows.Forms.DataGridView();
+            this.lblWorkPeopleDepart = new System.Windows.Forms.Label();
+            this.chklstWorkPeopleName = new System.Windows.Forms.CheckedListBox();
+            this.lblWorkPeople_Time = new System.Windows.Forms.Label();
             this.lblDateTime = new System.Windows.Forms.Label();
             this.lblDateTimeShow = new System.Windows.Forms.Label();
             this.lblUserName = new System.Windows.Forms.Label();
             this.lblUserNameShow = new System.Windows.Forms.Label();
             this.tmrDateTime = new System.Windows.Forms.Timer(this.components);
+            this.rdoClassAM = new System.Windows.Forms.RadioButton();
+            this.rdoClassPM = new System.Windows.Forms.RadioButton();
+            this.lblClass = new System.Windows.Forms.Label();
+            this.lblWorkPeopleOK = new System.Windows.Forms.Label();
             this.tabBentoOrder.SuspendLayout();
             this.tpEveryDayOrder.SuspendLayout();
             this.tpOrderRefer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBentoDataShow)).BeginInit();
             this.tpAccount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReferOrderAll)).BeginInit();
+            this.tpWorkPeople.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleShow)).BeginInit();
             this.SuspendLayout();
             // 
             // tabBentoOrder
@@ -123,6 +138,7 @@
             this.tabBentoOrder.Controls.Add(this.tpEveryDayOrder);
             this.tabBentoOrder.Controls.Add(this.tpOrderRefer);
             this.tabBentoOrder.Controls.Add(this.tpAccount);
+            this.tabBentoOrder.Controls.Add(this.tpWorkPeople);
             this.tabBentoOrder.Location = new System.Drawing.Point(12, 28);
             this.tabBentoOrder.Name = "tabBentoOrder";
             this.tabBentoOrder.SelectedIndex = 0;
@@ -980,6 +996,113 @@
             this.dtpStartDate.Size = new System.Drawing.Size(200, 27);
             this.dtpStartDate.TabIndex = 0;
             // 
+            // tpWorkPeople
+            // 
+            this.tpWorkPeople.Controls.Add(this.lblWorkPeopleOK);
+            this.tpWorkPeople.Controls.Add(this.rdoClassPM);
+            this.tpWorkPeople.Controls.Add(this.rdoClassAM);
+            this.tpWorkPeople.Controls.Add(this.lblClass);
+            this.tpWorkPeople.Controls.Add(this.btnWorkPeopleSend);
+            this.tpWorkPeople.Controls.Add(this.btnSelectWorkPeopleAll);
+            this.tpWorkPeople.Controls.Add(this.btnCancelWorkPeopleAll);
+            this.tpWorkPeople.Controls.Add(this.cboSelectWorkPeopleDepart);
+            this.tpWorkPeople.Controls.Add(this.dgvWorkPeopleShow);
+            this.tpWorkPeople.Controls.Add(this.lblWorkPeopleDepart);
+            this.tpWorkPeople.Controls.Add(this.chklstWorkPeopleName);
+            this.tpWorkPeople.Controls.Add(this.lblWorkPeople_Time);
+            this.tpWorkPeople.Location = new System.Drawing.Point(4, 22);
+            this.tpWorkPeople.Name = "tpWorkPeople";
+            this.tpWorkPeople.Padding = new System.Windows.Forms.Padding(3);
+            this.tpWorkPeople.Size = new System.Drawing.Size(792, 535);
+            this.tpWorkPeople.TabIndex = 3;
+            this.tpWorkPeople.Text = "每日出勤登記";
+            this.tpWorkPeople.UseVisualStyleBackColor = true;
+            // 
+            // btnWorkPeopleSend
+            // 
+            this.btnWorkPeopleSend.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnWorkPeopleSend.Location = new System.Drawing.Point(539, 190);
+            this.btnWorkPeopleSend.Name = "btnWorkPeopleSend";
+            this.btnWorkPeopleSend.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnWorkPeopleSend.Size = new System.Drawing.Size(121, 35);
+            this.btnWorkPeopleSend.TabIndex = 81;
+            this.btnWorkPeopleSend.Text = "送出";
+            this.btnWorkPeopleSend.UseVisualStyleBackColor = true;
+            this.btnWorkPeopleSend.Click += new System.EventHandler(this.btnWorkPeopleSend_Click);
+            // 
+            // btnSelectWorkPeopleAll
+            // 
+            this.btnSelectWorkPeopleAll.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnSelectWorkPeopleAll.Location = new System.Drawing.Point(539, 139);
+            this.btnSelectWorkPeopleAll.Name = "btnSelectWorkPeopleAll";
+            this.btnSelectWorkPeopleAll.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnSelectWorkPeopleAll.Size = new System.Drawing.Size(50, 35);
+            this.btnSelectWorkPeopleAll.TabIndex = 80;
+            this.btnSelectWorkPeopleAll.Text = "全選";
+            this.btnSelectWorkPeopleAll.UseVisualStyleBackColor = true;
+            this.btnSelectWorkPeopleAll.Click += new System.EventHandler(this.btnSelectWorkPeopleAll_Click);
+            // 
+            // btnCancelWorkPeopleAll
+            // 
+            this.btnCancelWorkPeopleAll.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnCancelWorkPeopleAll.Location = new System.Drawing.Point(610, 139);
+            this.btnCancelWorkPeopleAll.Name = "btnCancelWorkPeopleAll";
+            this.btnCancelWorkPeopleAll.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnCancelWorkPeopleAll.Size = new System.Drawing.Size(50, 35);
+            this.btnCancelWorkPeopleAll.TabIndex = 79;
+            this.btnCancelWorkPeopleAll.Text = "取消";
+            this.btnCancelWorkPeopleAll.UseVisualStyleBackColor = true;
+            this.btnCancelWorkPeopleAll.Click += new System.EventHandler(this.btnCancelWorkPeopleAll_Click);
+            // 
+            // cboSelectWorkPeopleDepart
+            // 
+            this.cboSelectWorkPeopleDepart.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cboSelectWorkPeopleDepart.FormattingEnabled = true;
+            this.cboSelectWorkPeopleDepart.Location = new System.Drawing.Point(539, 90);
+            this.cboSelectWorkPeopleDepart.Name = "cboSelectWorkPeopleDepart";
+            this.cboSelectWorkPeopleDepart.Size = new System.Drawing.Size(121, 27);
+            this.cboSelectWorkPeopleDepart.TabIndex = 76;
+            this.cboSelectWorkPeopleDepart.SelectedIndexChanged += new System.EventHandler(this.cboSelectWorkPeopleDepart_SelectedIndexChanged);
+            // 
+            // dgvWorkPeopleShow
+            // 
+            this.dgvWorkPeopleShow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvWorkPeopleShow.Location = new System.Drawing.Point(10, 300);
+            this.dgvWorkPeopleShow.Name = "dgvWorkPeopleShow";
+            this.dgvWorkPeopleShow.RowTemplate.Height = 24;
+            this.dgvWorkPeopleShow.Size = new System.Drawing.Size(460, 220);
+            this.dgvWorkPeopleShow.TabIndex = 78;
+            // 
+            // lblWorkPeopleDepart
+            // 
+            this.lblWorkPeopleDepart.AutoSize = true;
+            this.lblWorkPeopleDepart.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWorkPeopleDepart.Location = new System.Drawing.Point(489, 92);
+            this.lblWorkPeopleDepart.Name = "lblWorkPeopleDepart";
+            this.lblWorkPeopleDepart.Size = new System.Drawing.Size(57, 20);
+            this.lblWorkPeopleDepart.TabIndex = 77;
+            this.lblWorkPeopleDepart.Text = "部門：";
+            // 
+            // chklstWorkPeopleName
+            // 
+            this.chklstWorkPeopleName.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.chklstWorkPeopleName.FormattingEnabled = true;
+            this.chklstWorkPeopleName.Location = new System.Drawing.Point(10, 61);
+            this.chklstWorkPeopleName.MultiColumn = true;
+            this.chklstWorkPeopleName.Name = "chklstWorkPeopleName";
+            this.chklstWorkPeopleName.Size = new System.Drawing.Size(460, 220);
+            this.chklstWorkPeopleName.TabIndex = 1;
+            // 
+            // lblWorkPeople_Time
+            // 
+            this.lblWorkPeople_Time.AutoSize = true;
+            this.lblWorkPeople_Time.Font = new System.Drawing.Font("微軟正黑體", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWorkPeople_Time.Location = new System.Drawing.Point(6, 12);
+            this.lblWorkPeople_Time.Name = "lblWorkPeople_Time";
+            this.lblWorkPeople_Time.Size = new System.Drawing.Size(697, 24);
+            this.lblWorkPeople_Time.TabIndex = 0;
+            this.lblWorkPeople_Time.Text = "注意：每日出勤登記的截止時間為每天早上的9點前，請務必在9點以前登記完畢！";
+            // 
             // lblDateTime
             // 
             this.lblDateTime.AutoSize = true;
@@ -1024,6 +1147,50 @@
             // 
             this.tmrDateTime.Tick += new System.EventHandler(this.tmrDateTime_Tick);
             // 
+            // rdoClassAM
+            // 
+            this.rdoClassAM.AutoSize = true;
+            this.rdoClassAM.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.rdoClassAM.Location = new System.Drawing.Point(540, 61);
+            this.rdoClassAM.Name = "rdoClassAM";
+            this.rdoClassAM.Size = new System.Drawing.Size(57, 23);
+            this.rdoClassAM.TabIndex = 82;
+            this.rdoClassAM.TabStop = true;
+            this.rdoClassAM.Text = "早班";
+            this.rdoClassAM.UseVisualStyleBackColor = true;
+            // 
+            // rdoClassPM
+            // 
+            this.rdoClassPM.AutoSize = true;
+            this.rdoClassPM.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.rdoClassPM.Location = new System.Drawing.Point(603, 61);
+            this.rdoClassPM.Name = "rdoClassPM";
+            this.rdoClassPM.Size = new System.Drawing.Size(57, 23);
+            this.rdoClassPM.TabIndex = 83;
+            this.rdoClassPM.TabStop = true;
+            this.rdoClassPM.Text = "晚班";
+            this.rdoClassPM.UseVisualStyleBackColor = true;
+            // 
+            // lblClass
+            // 
+            this.lblClass.AutoSize = true;
+            this.lblClass.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblClass.Location = new System.Drawing.Point(490, 62);
+            this.lblClass.Name = "lblClass";
+            this.lblClass.Size = new System.Drawing.Size(57, 20);
+            this.lblClass.TabIndex = 84;
+            this.lblClass.Text = "班別：";
+            // 
+            // lblWorkPeopleOK
+            // 
+            this.lblWorkPeopleOK.AutoSize = true;
+            this.lblWorkPeopleOK.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWorkPeopleOK.Location = new System.Drawing.Point(489, 330);
+            this.lblWorkPeopleOK.Name = "lblWorkPeopleOK";
+            this.lblWorkPeopleOK.Size = new System.Drawing.Size(273, 20);
+            this.lblWorkPeopleOK.TabIndex = 85;
+            this.lblWorkPeopleOK.Text = "<=左列為已報出之早、晚班人員姓名";
+            // 
             // BentoOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1050,6 +1217,9 @@
             this.tpAccount.ResumeLayout(false);
             this.tpAccount.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReferOrderAll)).EndInit();
+            this.tpWorkPeople.ResumeLayout(false);
+            this.tpWorkPeople.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleShow)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1136,6 +1306,19 @@
         public System.Windows.Forms.Button btnNewPeople0;
         public System.Windows.Forms.TextBox txtInputName;
         private System.Windows.Forms.Button btnDepartOrder;
+        private System.Windows.Forms.TabPage tpWorkPeople;
+        private System.Windows.Forms.Label lblWorkPeople_Time;
+        private System.Windows.Forms.CheckedListBox chklstWorkPeopleName;
+        private System.Windows.Forms.Label lblWorkPeopleDepart;
+        private System.Windows.Forms.ComboBox cboSelectWorkPeopleDepart;
+        private System.Windows.Forms.Button btnSelectWorkPeopleAll;
+        private System.Windows.Forms.Button btnCancelWorkPeopleAll;
+        private System.Windows.Forms.DataGridView dgvWorkPeopleShow;
+        private System.Windows.Forms.Button btnWorkPeopleSend;
+        private System.Windows.Forms.RadioButton rdoClassAM;
+        private System.Windows.Forms.RadioButton rdoClassPM;
+        private System.Windows.Forms.Label lblWorkPeopleOK;
+        private System.Windows.Forms.Label lblClass;
     }
 }
 
