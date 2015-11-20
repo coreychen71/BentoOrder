@@ -97,7 +97,7 @@ namespace EW_BentoOrder
                         check = SqlComm.ExecuteReader();
                         if (check.HasRows)
                         {
-                            MessageBox.Show("該人員[" + name + "]今日已報過" + Class + "出勤！", "注意", MessageBoxButtons.OK,
+                            MessageBox.Show("該人員[" + name + "]今日已報過出勤！", "注意", MessageBoxButtons.OK,
                                 MessageBoxIcon.Hand);
                             OpensqlConME.Close();
                             return;
