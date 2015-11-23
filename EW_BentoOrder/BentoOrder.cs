@@ -14,27 +14,34 @@ namespace EW_BentoOrder
 {
     public partial class BentoOrder : Form
     {
+        SqlConnection OpenSqlCon = new SqlConnection("server=ERP;database=EW;uid=JSIS;pwd=JSIS");
+        SqlConnection OpensqlConME = new SqlConnection("server=EWNAS;database=ME;uid=me;pwd=2dae5na");
+        SqlCommand SqlComm = new SqlCommand();
+        string SQLCon = "server=EWNAS;database=ME;uid=me;pwd=2dae5na";
+        string SQLConERP="server=ERP;database=EW;uid=JSIS;pwd=JSIS";
+        //宣告後續要將CheckBox.Item的多餘字元移除的字串
+        string clear = "ACDEFGILMQSTPR0123456789";
+        //宣告部門字串陣列
+        string[] depart = { "總經理室", "業務部", "管理部", "財務部", "工程部", "製造研發部", "品保部", "廠長室", "壓合課",
+            "生管課", "測試課", "品檢課", "乾膜課", "防焊課", "鑽孔課", "成型課" };
+        //宣告部門ID字串陣列，注意：初始值的排序需要與部門字串一樣
+        string[] departid = { "EG", "ES", "EM", "EA", "EE", "ER", "EQ", "MM", "EL", "EP", "ET", "EI", "FF", "LF", "DF",
+            "CF" };
+        //宣告每日出勤登記的時間
+        string st1 = "21:00";
+        string st2 = "21:00";
+
         public BentoOrder()
         {
             InitializeComponent();
             lblWorkPeople_Time.ForeColor = Color.Red;
         }
 
-        SqlConnection OpenSqlCon = new SqlConnection("server=ERP;database=EW;uid=JSIS;pwd=JSIS");
-        SqlConnection OpensqlConME = new SqlConnection("server=EWNAS;database=ME;uid=me;pwd=2dae5na");
-        SqlCommand SqlComm = new SqlCommand();
-        //宣告後續要將CheckBox.Item的多餘字元移除的字串
-        string clear = "ACDEFGILMQSTPR0123456789";
-
-        //宣告報每日出勤的時間
-        string st1 = "21:00";
-        string st2 = "21:00";
-
         /// <summary>
-        /// 依假別狀態寫入SQL
+        /// 依假別狀態寫入SQL，要輸入時間
         /// </summary>
         /// <param name="StatusNum">假別狀態代碼</param>
-        private void InsertWPS_Status(int StatusNum)
+        private void InsertWPSTime_Status(int StatusNum)
         {
             if (rdoClassAM.Checked == false & rdoClassPM.Checked == false)
             {
@@ -144,6 +151,224 @@ namespace EW_BentoOrder
         }
 
         /// <summary>
+        /// 依假別狀態寫入SQL，要輸入時間及事由
+        /// </summary>
+        /// <param name="StatusNum">假別狀態代碼</param>
+        private void InsertWPSTimeTxt_Status(int StatusNum)
+        {
+            if (rdoClassAM.Checked == false & rdoClassPM.Checked == false)
+            {
+                MessageBox.Show("尚未選擇班別！", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            else if (cboSelectWorkPeopleDepart.SelectedIndex == 0)
+            {
+                MessageBox.Show("尚未選擇部門！", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            else
+            {
+                DateTime time = new DateTime();
+                time = DateTime.Now;
+                DateTime t1 = Convert.ToDateTime(st1);
+                DateTime t2 = Convert.ToDateTime(st2);
+                if (time > t1 | time > t2)
+                {
+                    MessageBox.Show("已超過每日出勤登記時間！" + Environment.NewLine + "請洽詢管理部-人資專員。", "錯誤",
+                        MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                }
+                else
+                {
+                    int Classnum = 0;
+                    string Class = "";
+                    if (rdoClassAM.Checked == true)
+                    {
+                        Classnum = 1;
+                        Class = "早班";
+                    }
+                    else if (rdoClassPM.Checked == true)
+                    {
+                        Classnum = 2;
+                        Class = "晚班";
+                    }
+                    //先撈出選定部門的部門ID
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                        cboSelectWorkPeopleDepart.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "DepartId");
+                    //先檢查今日該部門人員是否已報過出勤
+                    int a = chklstWorkPeopleName.CheckedItems.Count;
+                    int q;
+                    string name = null;
+                    SqlDataReader check;
+                    for (q = 0; q < a; q++)
+                    {
+                        OpensqlConME.Close();
+                        name = chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray());
+                        SqlComm.CommandText = "select * from WorkPeople where (Date >= '" +
+                            DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and Date <='" +
+                            DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
+                            chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
+                            "' and Class in (1,2)";
+                        SqlComm.Connection = OpensqlConME;
+                        OpensqlConME.Open();
+                        check = SqlComm.ExecuteReader();
+                        if (check.HasRows)
+                        {
+                            MessageBox.Show("該人員[" + name + "]今日已報過出勤！", "注意", MessageBoxButtons.OK,
+                                MessageBoxIcon.Hand);
+                            OpensqlConME.Close();
+                            return;
+                        }
+                    }
+                    OpensqlConME.Close();
+                    SelectTimeTxt st = new SelectTimeTxt();
+                    st.dtpWPSStart.Format = DateTimePickerFormat.Custom;
+                    st.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
+                    st.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
+                    st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                    if (st.ShowDialog() == DialogResult.OK)
+                    {
+                        OpensqlConME.Open();
+                        int A = chklstWorkPeopleName.CheckedItems.Count;
+                        for (int i = 0; i < A; i++)
+                        {
+                            SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
+                                chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                            SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                            DataSet ReadUser = new DataSet();
+                            ReadNI.Fill(ReadUser, "ReadUser");
+                            SqlComm.CommandText = "insert into WorkPeople (Date,EmpId,EmpName,DepartId,Class,Status," +
+                                "StartTime,EndTime,RegisterPeople,RegisterDate,Notation) values ('" +
+                                DateTime.Now.ToString("yyyy-MM-dd") + "','" +
+                                ReadUser.Tables["ReadUser"].Rows[0][0].ToString().Trim() + "','" +
+                                ReadUser.Tables["ReadUser"].Rows[0][1].ToString().Trim() + "','" +
+                                Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "','" +
+                                Classnum + "'," + StatusNum + ",'" + st.dtpWPSStart.Value.ToString("HH:mm") + "','" +
+                                st.dtpWPSEnd.Value.ToString("HH:mm") + "','" + lblUserNameShow.Text.ToString() +
+                                "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" +
+                                st.txtInputNotation.Text + "')";
+                            SqlComm.Connection = OpensqlConME;
+                            SqlComm.ExecuteNonQuery();
+                        }
+                        MessageBox.Show("部門：" + cboSelectWorkPeopleDepart.Text.ToString() + Environment.NewLine +
+                            Class + "今日排休人數共 " + chklstWorkPeopleName.CheckedItems.Count + "位！" + Environment.NewLine +
+                            "每日出勤登記已完成！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        OpenSqlCon.Close();
+                        OpensqlConME.Close();
+                        RenewWorkPeople(cboSelectWorkPeopleDepart.Text);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 依假別狀態寫入SQL，排、換休使用，單位一天
+        /// </summary>
+        /// <param name="StatusNum">假別狀態代碼</param>
+        private void InsertWPS_Status(int StatusNum)
+        {
+            if (rdoClassAM.Checked == false & rdoClassPM.Checked == false)
+            {
+                MessageBox.Show("尚未選擇班別！", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            else if (cboSelectWorkPeopleDepart.SelectedIndex == 0)
+            {
+                MessageBox.Show("尚未選擇部門！", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            else
+            {
+                DateTime time = new DateTime();
+                time = DateTime.Now;
+                DateTime t1 = Convert.ToDateTime(st1);
+                DateTime t2 = Convert.ToDateTime(st2);
+                if (time > t1 | time > t2)
+                {
+                    MessageBox.Show("已超過每日出勤登記時間！" + Environment.NewLine + "請洽詢管理部-人資專員。", "錯誤",
+                        MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                }
+                else
+                {
+                    int Classnum = 0;
+                    string Class = "";
+                    if (rdoClassAM.Checked == true)
+                    {
+                        Classnum = 1;
+                        Class = "早班";
+                    }
+                    else if (rdoClassPM.Checked == true)
+                    {
+                        Classnum = 2;
+                        Class = "晚班";
+                    }
+                    //先撈出選定部門的部門ID
+                    SqlComm.CommandText = "select DepartId from HPSdDepartTree where DepartName='" +
+                        cboSelectWorkPeopleDepart.Text + "'";
+                    SqlDataAdapter Load = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "DepartId");
+                    //先檢查今日該部門人員是否已報過出勤
+                    int a = chklstWorkPeopleName.CheckedItems.Count;
+                    int q;
+                    string name = null;
+                    SqlDataReader check;
+                    for (q = 0; q < a; q++)
+                    {
+                        OpensqlConME.Close();
+                        name = chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray());
+                        SqlComm.CommandText = "select * from WorkPeople where (Date >= '" +
+                            DateTime.Now.ToString("yyyy-MM-dd 00:00:00") + "' and Date <='" +
+                            DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
+                            chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
+                            "' and Class in (1,2)";
+                        SqlComm.Connection = OpensqlConME;
+                        OpensqlConME.Open();
+                        check = SqlComm.ExecuteReader();
+                        if (check.HasRows)
+                        {
+                            MessageBox.Show("該人員[" + name + "]今日已報過出勤！", "注意", MessageBoxButtons.OK,
+                                MessageBoxIcon.Hand);
+                            OpensqlConME.Close();
+                            return;
+                        }
+                    }
+                    OpensqlConME.Close();
+                    OpensqlConME.Open();
+                    int A = chklstWorkPeopleName.CheckedItems.Count;
+                    for (int i = 0; i < A; i++)
+                    {
+                        SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
+                            chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                        SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
+                        DataSet ReadUser = new DataSet();
+                        ReadNI.Fill(ReadUser, "ReadUser");
+                        SqlComm.CommandText = "insert into WorkPeople (Date,EmpId,EmpName,DepartId,Class,Status," +
+                            "RegisterPeople,RegisterDate) values ('" +
+                            DateTime.Now.ToString("yyyy-MM-dd") + "','" +
+                            ReadUser.Tables["ReadUser"].Rows[0][0].ToString().Trim() + "','" +
+                            ReadUser.Tables["ReadUser"].Rows[0][1].ToString().Trim() + "','" +
+                            Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "','" +
+                            Classnum + "'," + StatusNum + ",'" + lblUserNameShow.Text.ToString() +
+                            "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
+                        SqlComm.Connection = OpensqlConME;
+                        SqlComm.ExecuteNonQuery();
+                    }
+                    MessageBox.Show("部門：" + cboSelectWorkPeopleDepart.Text.ToString() + Environment.NewLine +
+                        Class + "今日排休人數共 " + chklstWorkPeopleName.CheckedItems.Count + "位！" + Environment.NewLine +
+                        "每日出勤登記已完成！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    OpenSqlCon.Close();
+                    OpensqlConME.Close();
+                    RenewWorkPeople(cboSelectWorkPeopleDepart.Text);
+                }
+            }
+        }
+
+        /// <summary>
         /// 重新讀取已報出勤人員
         /// </summary>
         /// <param name="departname">ComboBox.部門</param>
@@ -162,9 +387,10 @@ namespace EW_BentoOrder
             }
             SQLCon = "server=EWNAS;database=ME;uid=me;pwd=2dae5na";
             SQLComm = "select Date as '日期',EmpId as '工號',EmpName as '姓名',Class,Status,StartTime as '起始時間'," +
-                "EndTime as '結束時間' from WorkPeople where DepartId='" + Read.Tables["DepartId"].Rows[0]["DepartId"]
-                .ToString().Trim() + "' and Class in (1,2) and Date between '" + DateTime.Now.ToString("yyyy-MM-dd") +
-                "' and '" + DateTime.Now.ToString("yyyy-MM-dd") + "' order by Date,Class asc";
+                "EndTime as '結束時間',Notation as '事由' from WorkPeople where DepartId='" +
+                Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "' and Class in (1,2) and " +
+                "Date between '" + DateTime.Now.ToString("yyyy-MM-dd") + "' and '" +
+                DateTime.Now.ToString("yyyy-MM-dd") + "' order by Date,Class asc";
             using (SqlConnection sqlcon = new SqlConnection(SQLCon))
             {
                 using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
@@ -196,17 +422,21 @@ namespace EW_BentoOrder
                     }
                     else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "2")
                     {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "特休";
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "調休";
                     }
                     else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "3")
                     {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "病假";
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "特休";
                     }
                     else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "4")
                     {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "事假";
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "病假";
                     }
                     else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "5")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "事假";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "6")
                     {
                         Read.Tables["WorkPeople"].Rows[i]["狀態"] = "曠職";
                     }
@@ -214,46 +444,153 @@ namespace EW_BentoOrder
                 else
                 {
                     Read.Tables["WorkPeople"].Rows[i]["班別"] = "晚班";
-                    if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "")
+                    if (Read.Tables["WorkPeople"].Rows[i]["Class"].ToString().Trim() == classnum)
                     {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "正常出勤";
-                    }
-                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "0")
-                    {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "排休";
-                    }
-                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "1")
-                    {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "換休";
-                    }
-                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "2")
-                    {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "特休";
-                    }
-                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "3")
-                    {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "病假";
-                    }
-                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "4")
-                    {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "事假";
-                    }
-                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "5")
-                    {
-                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "曠職";
+                        Read.Tables["WorkPeople"].Rows[i]["班別"] = "早班";
+                        if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "正常出勤";
+                        }
+                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "0")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "排休";
+                        }
+                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "1")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "換休";
+                        }
+                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "2")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "調休";
+                        }
+                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "3")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "特休";
+                        }
+                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "4")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "病假";
+                        }
+                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "5")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "事假";
+                        }
+                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "6")
+                        {
+                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "曠職";
+                        }
                     }
                 }
             }
             dgvWorkPeopleShow.DataSource = Read.Tables["WorkPeople"];
             dgvWorkPeopleShow.Columns["Class"].Visible = false;
             dgvWorkPeopleShow.Columns["Status"].Visible = false;
-            dgvWorkPeopleShow.Columns["日期"].Width = 70;
-            dgvWorkPeopleShow.Columns["工號"].Width = 70;
-            dgvWorkPeopleShow.Columns["姓名"].Width = 70;
-            dgvWorkPeopleShow.Columns["班別"].Width = 70;
-            dgvWorkPeopleShow.Columns["狀態"].Width = 70;
-            dgvWorkPeopleShow.Columns["起始時間"].Width = 90;
-            dgvWorkPeopleShow.Columns["結束時間"].Width = 90;
+            dgvWorkPeopleShow.Columns["日期"].Width = 60;
+            dgvWorkPeopleShow.Columns["工號"].Width = 60;
+            dgvWorkPeopleShow.Columns["姓名"].Width = 60;
+            dgvWorkPeopleShow.Columns["班別"].Width = 60;
+            dgvWorkPeopleShow.Columns["狀態"].Width = 60;
+            dgvWorkPeopleShow.Columns["起始時間"].Width = 80;
+            dgvWorkPeopleShow.Columns["結束時間"].Width = 80;
+            dgvWorkPeopleShow.Columns["事由"].Width = 150;
+        }
+
+        /// <summary>
+        /// 統計各課出勤狀況並秀在DataGridView
+        /// </summary>
+        private void WorkPeopleReferAll()
+        {
+            //先將depart陣列內容填入DataGridView
+            DataGridViewRowCollection row = dgvWorkPeopleReferShow.Rows;
+            for (int i = 0; i < depart.Count(); i++)
+            {
+                row.Add(new object[] { depart[i] });
+            }
+            string SQLComm = "select distinct DepartId,COUNT(*) as Num from HPSdEmpInfo where EmpStatus=1 group by " +
+                        "DepartId";
+            using (SqlConnection sqlcon = new SqlConnection(SQLConERP))
+            {
+                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
+                {
+
+                }
+            }
+            SQLComm = "select DepartId,Status from WorkPeople where Class in (1,2) and Date between '" +
+                DateTime.Now.ToString("yyyy-MM-dd") + "' and '" + DateTime.Now.ToString("yyyy-MM-dd") + "'";
+            using (SqlConnection sqlcon = new SqlConnection(SQLCon))
+            {
+                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
+                {
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "AllUser");
+                    //先將Read.Tables["AllUser"]欄位1的部門編號轉換成部門名稱
+                    for (int i = 0; i < Read.Tables["AllUser"].Rows.Count; i++)
+                    {
+                        for (int x = 0; x < departid.Count(); x++)
+                        {
+                            if (Read.Tables["AllUser"].Rows[i][0].ToString().Trim() == departid[x])
+                            {
+                                Read.Tables["Alluser"].Rows[i][0] = depart[x];
+                            }
+                        }
+                    }
+                    //依照DataGridView所建立的各部門列數與Read.Tables["AllUser"]的欄位2之出勤狀態進行各課的出勤狀態人數統計
+                    for (int i = 0; i < dgvWorkPeopleReferShow.Rows.Count - 1; i++)
+                    {
+                        //a0=正常出勤、a1=排休、a2=換休、a3=調休、a4=特休、a5=病假、a6=事假、a7=曠職
+                        int a0 = 0, a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0, a6 = 0, a7 = 0;
+                        int x = 0;
+                        for (x = 0; x < Read.Tables["AllUser"].Rows.Count; x++)
+                        {
+                            if (dgvWorkPeopleReferShow.Rows[i].Cells[0].Value.ToString().Trim() ==
+                                Read.Tables["AllUser"].Rows[x][0].ToString().Trim())
+                            {
+                                if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "")
+                                {
+                                    a0++;
+                                }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "0")
+                                {
+                                    a1++;
+                                }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "1")
+                                {
+                                    a2++;
+                                }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "2")
+                                {
+                                    a3++;
+                                }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "3")
+                                {
+                                    a4++;
+                                }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "4")
+                                {
+                                    a5++;
+                                }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "5")
+                                {
+                                    a6++;
+                                }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "6")
+                                {
+                                    a7++;
+                                }
+                            }
+                        }
+                        //把統計好的人數指定給DataGridView相關欄位
+                        dgvWorkPeopleReferShow.Rows[i].Cells["實到"].Value = a0;
+                        dgvWorkPeopleReferShow.Rows[i].Cells["排休"].Value = a1;
+                        dgvWorkPeopleReferShow.Rows[i].Cells["換休"].Value = a2;
+                        dgvWorkPeopleReferShow.Rows[i].Cells["調休"].Value = a3;
+                        dgvWorkPeopleReferShow.Rows[i].Cells["特休"].Value = a4;
+                        dgvWorkPeopleReferShow.Rows[i].Cells["病假"].Value = a5;
+                        dgvWorkPeopleReferShow.Rows[i].Cells["事假"].Value = a6;
+                        dgvWorkPeopleReferShow.Rows[i].Cells["曠職"].Value = a7;
+                    }
+                }
+            }
         }
 
         private void txtNum_keyPress(object sender, KeyPressEventArgs e)
@@ -278,12 +615,19 @@ namespace EW_BentoOrder
             txtCompanyCellPhone.ReadOnly = true;
             btnBentoTelChangeSave.Enabled = false;
             btnSavePrice.Enabled = false;
+            dgvWorkPeopleShow.ReadOnly = true;
+            dgvWorkPeopleReferShow.ReadOnly = true;
             SqlComm.CommandText = "select distinct HPSdEmpInfo.DepartId,HPSdDepartTree.DepartName from HPSdEmpInfo," +
                 "HPSdDepartTree where HPSdEmpInfo.DepartId = HPSdDepartTree.DepartId and HPSdDepartTree.DepartId " +
                 "not in ('EF')";
             SqlDataAdapter DepartId = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
+            SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus=1";
+            DepartId.SelectCommand = SqlComm;
+            SqlComm.Connection = OpenSqlCon;
+            DepartId.Fill(dpid, "AllUser");
+            lblAllUserShow.Text = "共" + Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 3) + "員";
             //Create new rows for dpid.tables
             DataRow dr = dpid.Tables["DepartId"].NewRow();
             //設定dr的資料
@@ -2617,6 +2961,7 @@ namespace EW_BentoOrder
             }
         }
 
+        //各課報餐統計
         private void btnDepartOrder_Click(object sender, EventArgs e)
         {
             if (rdoReferAm.Checked == false & rdoReferPm.Checked == false & rdoReferNight.Checked == false)
@@ -2654,12 +2999,7 @@ namespace EW_BentoOrder
                 DataSet Read = new DataSet();
                 Load.Fill(Read, "A");
                 OpensqlConME.Close();
-                //宣告部門字串陣列
-                string[] depart = {"總經理室","業務部","管理部","財務部","工程部","製造研發部","品保部","廠長室","壓合課",
-                    "生管課","測試課","品檢課","乾膜課","防焊課","鑽孔課","成型課" };
-                //宣告部門ID字串陣列，注意：初始值的排序需要與部門字串一樣
-                string[] departid = {"EG","ES","EM","EA","EE","ER","EQ","MM","EL","EP","ET","EI","FF","LF","DF",
-                    "CF" };
+                
                 //用迴圈下去跑字串比對，將符合條件的欄位部門ID值轉成中文部門別
                 for (int i=0;i<Read.Tables["A"].Rows.Count;i++)
                 {
@@ -2826,46 +3166,52 @@ namespace EW_BentoOrder
             }
         }
 
-        //排休
+        //排休=0
         private void btnWPS_0_Click(object sender, EventArgs e)
         {
             InsertWPS_Status(0);
         }
 
-        //換休
+        //換休=1
         private void btnWPS_1_Click(object sender, EventArgs e)
         {
             InsertWPS_Status(1);
         }
 
-        //調休
+        //調休=2
         private void btnWPS_2_Click(object sender, EventArgs e)
         {
-            InsertWPS_Status(2);
+            InsertWPSTime_Status(2);
         }
 
-        //特休
+        //特休=3
         private void btnWPS_3_Click(object sender, EventArgs e)
         {
-            InsertWPS_Status(3);
+            InsertWPSTime_Status(3);
         }
 
-        //病假
+        //病假=4
         private void btnWPS_4_Click(object sender, EventArgs e)
         {
-            InsertWPS_Status(4);
+            InsertWPSTimeTxt_Status(4);
         }
 
-        //事假
+        //事假=5
         private void btnWPS_5_Click(object sender, EventArgs e)
         {
-            InsertWPS_Status(5);
+            InsertWPSTimeTxt_Status(5);
         }
 
-        //曠職
+        //曠職=6
         private void btnWPS_6_Click(object sender, EventArgs e)
         {
-            InsertWPS_Status(6);
+            InsertWPSTime_Status(6);
+        }
+
+        //每日出勤查詢-全廠統計
+        private void btnWorkPeopleReferAll_Click(object sender, EventArgs e)
+        {
+            WorkPeopleReferAll();
         }
     }
 }

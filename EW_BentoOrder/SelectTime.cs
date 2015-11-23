@@ -9,19 +9,14 @@ using System.Windows.Forms;
 
 namespace EW_BentoOrder
 {
-    public partial class SelectTime : Form
+    public partial class SelectTime : SelectTimeTxt
     {
         public SelectTime()
         {
             InitializeComponent();
         }
 
-        private void btnSTCancel_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void btnSTSend_Click(object sender, EventArgs e)
+        public override void btnSTSend_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
         }
