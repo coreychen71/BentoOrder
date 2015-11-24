@@ -500,22 +500,15 @@ namespace EW_BentoOrder
         /// </summary>
         private void WorkPeopleReferAll()
         {
+            dgvWorkPeopleReferShow.Rows.Clear();
             //先將depart陣列內容填入DataGridView
             DataGridViewRowCollection row = dgvWorkPeopleReferShow.Rows;
             for (int i = 0; i < depart.Count(); i++)
             {
                 row.Add(new object[] { depart[i] });
             }
-            string SQLComm = "select distinct DepartId,COUNT(*) as Num from HPSdEmpInfo where EmpStatus=1 group by " +
-                        "DepartId";
-            using (SqlConnection sqlcon = new SqlConnection(SQLConERP))
-            {
-                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
-                {
-
-                }
-            }
-            SQLComm = "select DepartId,Status from WorkPeople where Class in (1,2) and Date between '" +
+            //撈出當天的出勤資料，不分早晚班
+            string SQLComm = "select DepartId,Status from WorkPeople where Class in (1,2) and Date between '" +
                 DateTime.Now.ToString("yyyy-MM-dd") + "' and '" + DateTime.Now.ToString("yyyy-MM-dd") + "'";
             using (SqlConnection sqlcon = new SqlConnection(SQLCon))
             {
@@ -588,6 +581,50 @@ namespace EW_BentoOrder
                         dgvWorkPeopleReferShow.Rows[i].Cells["病假"].Value = a5;
                         dgvWorkPeopleReferShow.Rows[i].Cells["事假"].Value = a6;
                         dgvWorkPeopleReferShow.Rows[i].Cells["曠職"].Value = a7;
+                    }
+                }
+            }
+            //撈出各部門在職中的人數
+            SQLComm = "select distinct DepartId,COUNT(*) as Num from HPSdEmpInfo where EmpStatus=1 group by " +
+                        "DepartId";
+            using (SqlConnection sqlcon = new SqlConnection(SQLConERP))
+            {
+                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
+                {
+                    DataSet Read = new DataSet();
+                    Load.Fill(Read, "UserNum");
+                    for(int i=0;i< Read.Tables["UserNum"].Rows.Count;i++)
+                    {
+                        //將管理部的在職人數減去1(掛名人員)
+                        if(Read.Tables["UserNum"].Rows[i][0].ToString().Trim()=="EM")
+                        {
+                            int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1]))-1;
+                            Read.Tables["UserNum"].Rows[i][1] = x.ToString();
+                        }
+                        //將廠長室的在職人數減去2(掛名人員)
+                        else if (Read.Tables["UserNum"].Rows[i][0].ToString().Trim() == "MM")
+                        {
+                            int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1])) - 2;
+                            Read.Tables["UserNum"].Rows[i][1] = x.ToString();
+                        }
+                        //先將Read.Tables的部門代碼轉成部門名稱
+                        for (int x=0;x<departid.Count();x++)
+                        {
+                            if(Read.Tables["UserNum"].Rows[i][0].ToString().Trim()==departid[x])
+                            {
+                                Read.Tables["UserNum"].Rows[i][0] = depart[x];
+                            }
+                        }
+                        //若Read.Tables的部門名稱等於DataGridView的部門名稱，則將在職人數帶入欄位
+                        for(int s=0;s<dgvWorkPeopleReferShow.Rows.Count-1;s++)
+                        {
+                            if(dgvWorkPeopleReferShow.Rows[s].Cells[0].Value.ToString().Trim()==
+                                Read.Tables["UserNum"].Rows[i][0].ToString().Trim())
+                            {
+                                dgvWorkPeopleReferShow.Rows[s].Cells[1].Value = Read.Tables["UserNum"].Rows[i][1]
+                                    .ToString().Trim();
+                            }
+                        }
                     }
                 }
             }
