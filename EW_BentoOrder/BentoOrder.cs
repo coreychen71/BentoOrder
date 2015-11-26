@@ -496,7 +496,8 @@ namespace EW_BentoOrder
         }
 
         /// <summary>
-        /// 統計各課出勤狀況並秀在DataGridView
+        /// 統計各課出勤狀況秀在DataGridView
+        /// 計算人數和出勤率
         /// </summary>
         private void WorkPeopleReferAll()
         {
@@ -507,9 +508,15 @@ namespace EW_BentoOrder
             {
                 row.Add(new object[] { depart[i] });
             }
+            DataGridViewRowCollection row1 = dgvWPRshow.Rows;
+            for (int i = 0; i < depart.Count(); i++)
+            {
+                row1.Add(new object[] { depart[i] });
+            }
             //撈出當天的出勤資料，不分早晚班
-            string SQLComm = "select DepartId,Status from WorkPeople where Class in (1,2) and Date between '" +
-                DateTime.Now.ToString("yyyy-MM-dd") + "' and '" + DateTime.Now.ToString("yyyy-MM-dd") + "'";
+            string SQLComm = "select DepartId,Status,EmpName,Notation from WorkPeople where Class in (1,2) and " +
+                "Date between '" + DateTime.Now.ToString("yyyy-MM-dd") + "' and '" +
+                DateTime.Now.ToString("yyyy-MM-dd") + "'";
             using (SqlConnection sqlcon = new SqlConnection(SQLCon))
             {
                 using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
@@ -530,8 +537,10 @@ namespace EW_BentoOrder
                     //依照DataGridView所建立的各部門列數與Read.Tables["AllUser"]的欄位2之出勤狀態進行各課的出勤狀態人數統計
                     for (int i = 0; i < dgvWorkPeopleReferShow.Rows.Count - 1; i++)
                     {
-                        //a0=正常出勤、a1=排休、a2=換休、a3=調休、a4=特休、a5=病假、a6=事假、a7=曠職
-                        int a0 = 0, a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0, a6 = 0, a7 = 0;
+                        //a0=正常出勤、a1=排休、a2=換休、a3=調休、a4=特休、a5=病假、a6=事假、a7=曠職、a8=新進
+                        int a0 = 0, a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0, a6 = 0, a7 = 0, a8 = 0;
+                        List<string> A1 = new List<string>();
+                        string[] all = new string[10];
                         int x = 0;
                         for (x = 0; x < Read.Tables["AllUser"].Rows.Count; x++)
                         {
@@ -545,6 +554,7 @@ namespace EW_BentoOrder
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "0")
                                 {
                                     a1++;
+                                    A1.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "1")
                                 {
@@ -570,6 +580,17 @@ namespace EW_BentoOrder
                                 {
                                     a7++;
                                 }
+                                else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "7")
+                                {
+                                    a8++;
+                                }
+                            }
+                            if(A1.Count()>0)
+                            {
+                                for (int A = 0; A < A1.Count(); A++)
+                                {
+                                    all[A] = A1[A];
+                                }
                             }
                         }
                         //把統計好的人數指定給DataGridView相關欄位
@@ -581,10 +602,13 @@ namespace EW_BentoOrder
                         dgvWorkPeopleReferShow.Rows[i].Cells["病假"].Value = a5;
                         dgvWorkPeopleReferShow.Rows[i].Cells["事假"].Value = a6;
                         dgvWorkPeopleReferShow.Rows[i].Cells["曠職"].Value = a7;
+                        dgvWPRshow.Rows[i].Cells["排休人員"].Value = all[0] + "  " + all[1] + "  " + all[2] +
+                            "\r\n" + all[3] + "  " + all[4] + "  " + all[5] + "\r\n" + all[6] + "  " + all[7] + "  " +
+                            all[8] + "  " + all[9];
                     }
                 }
             }
-            //撈出各部門在職中的人數
+            //撈出各部門在職中的人數，再指定給DataGridView的應到欄位秀出
             SQLComm = "select distinct DepartId,COUNT(*) as Num from HPSdEmpInfo where EmpStatus=1 group by " +
                         "DepartId";
             using (SqlConnection sqlcon = new SqlConnection(SQLConERP))
@@ -628,6 +652,20 @@ namespace EW_BentoOrder
                     }
                 }
             }
+            //計算實到人數與出勤率
+            float alluser = float.Parse(lblAllUserShow.Text.Trim(new char[] { '員' }));
+            float[] num = new float[dgvWorkPeopleReferShow.Rows.Count - 1];
+            //將欄位數值帶入陣列
+            for (int a = 0; a < dgvWorkPeopleReferShow.Rows.Count - 1; a++)
+            {
+                num[a] = float.Parse(dgvWorkPeopleReferShow.Rows[a].Cells[2].Value.ToString());
+            }
+            //將陣列加總
+            float realusersum = num.Sum();
+            lblRealUserShow.Text = realusersum + "員";
+            //實到人數除以應到人數
+            float percent = realusersum / alluser;
+            lblTodayAttendanceShow.Text = percent.ToString("#0.00%");
         }
 
         private void txtNum_keyPress(object sender, KeyPressEventArgs e)
@@ -645,6 +683,9 @@ namespace EW_BentoOrder
             dtpEndDate.Value = DateTime.Now;
             chkVegetableFood.ForeColor = Color.Red;
             lblVegetableFood.ForeColor = Color.Red;
+            lblAllUserShow.Text = "";
+            lblTodayAttendanceShow.Text = "";
+            lblRealUserShow.Text = "";
             rtbOrderTimeIllustrate.ForeColor = Color.Red;
             lblOrderNumShow.Text = null;
             txtCompanyName.ReadOnly = true;
@@ -654,17 +695,22 @@ namespace EW_BentoOrder
             btnSavePrice.Enabled = false;
             dgvWorkPeopleShow.ReadOnly = true;
             dgvWorkPeopleReferShow.ReadOnly = true;
+            dgvWorkPeopleReferShow.Columns["實到"].Frozen = true;
+            dgvWPRshow.ReadOnly = true;
+            //設定DataGridView欄位可換行
+            dgvWPRshow.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
             SqlComm.CommandText = "select distinct HPSdEmpInfo.DepartId,HPSdDepartTree.DepartName from HPSdEmpInfo," +
                 "HPSdDepartTree where HPSdEmpInfo.DepartId = HPSdDepartTree.DepartId and HPSdDepartTree.DepartId " +
                 "not in ('EF')";
             SqlDataAdapter DepartId = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
+            //撈出在職中的人員，並將總數減3後，秀在Label.Text
             SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus=1";
             DepartId.SelectCommand = SqlComm;
             SqlComm.Connection = OpenSqlCon;
             DepartId.Fill(dpid, "AllUser");
-            lblAllUserShow.Text = "共" + Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 3) + "員";
+            lblAllUserShow.Text = Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 3) + "員";
             //Create new rows for dpid.tables
             DataRow dr = dpid.Tables["DepartId"].NewRow();
             //設定dr的資料
@@ -1358,6 +1404,7 @@ namespace EW_BentoOrder
             }
         }
 
+        //月結統計-全部
         private void btnReferOrder_Click(object sender, EventArgs e)
         {
             if (rdOneCompany.Checked == false & rdoTwoCompany.Checked == false & rdoAllCompany.Checked == false & 
@@ -3250,5 +3297,6 @@ namespace EW_BentoOrder
         {
             WorkPeopleReferAll();
         }
+
     }
 }
