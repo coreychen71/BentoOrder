@@ -95,6 +95,12 @@
     <Compile Include="SelectTime.Designer.cs">
       <DependentUpon>SelectTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="SelectTimeOther.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectTimeOther.Designer.cs">
+      <DependentUpon>SelectTimeOther.cs</DependentUpon>
+    </Compile>
     <Compile Include="SelectTimeTxt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,9 @@
     </Compile>
     <EmbeddedResource Include="SelectTime.resx">
       <DependentUpon>SelectTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectTimeOther.resx">
+      <DependentUpon>SelectTimeOther.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SelectTimeTxt.resx">
       <DependentUpon>SelectTimeTxt.cs</DependentUpon>

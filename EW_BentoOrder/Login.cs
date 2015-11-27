@@ -47,6 +47,7 @@ namespace EW_BentoOrder
                     bo.btnBentoTelChangeSave.Enabled = true;
                     bo.btnCancelOrderM.Enabled = true;
                     bo.btnSendM.Enabled = true;
+                    bo.btnNewPeople.Enabled = true;
                     bo.btnNewPeople0.Enabled = true;
                     bo.btnNewPeople1.Enabled = true;
                     bo.txtInputName.Enabled = true;
@@ -60,6 +61,7 @@ namespace EW_BentoOrder
                     bo.btnBentoTelChangeSave.Enabled = false;
                     bo.btnCancelOrderM.Enabled = false;
                     bo.btnSendM.Enabled = false;
+                    bo.btnNewPeople.Enabled = false;
                     bo.btnNewPeople0.Enabled = false;
                     bo.btnNewPeople1.Enabled = false;
                     bo.txtInputName.Enabled = false;

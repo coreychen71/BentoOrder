@@ -106,6 +106,9 @@
             this.dtpEndDate = new System.Windows.Forms.DateTimePicker();
             this.dtpStartDate = new System.Windows.Forms.DateTimePicker();
             this.tpWorkPeople = new System.Windows.Forms.TabPage();
+            this.btnWorkPeopleOther = new System.Windows.Forms.Button();
+            this.txtNewPeople = new System.Windows.Forms.TextBox();
+            this.btnNewPeople = new System.Windows.Forms.Button();
             this.btnWPS_2 = new System.Windows.Forms.Button();
             this.dgvWorkPeopleShow = new System.Windows.Forms.DataGridView();
             this.btnWPS_6 = new System.Windows.Forms.Button();
@@ -125,6 +128,8 @@
             this.chklstWorkPeopleName = new System.Windows.Forms.CheckedListBox();
             this.lblWorkPeople_Time = new System.Windows.Forms.Label();
             this.tpWorkPeopleRefer = new System.Windows.Forms.TabPage();
+            this.dgvWPRshow = new System.Windows.Forms.DataGridView();
+            this.lblRealUserShow = new System.Windows.Forms.Label();
             this.lblRealUser = new System.Windows.Forms.Label();
             this.lblTodayAttendanceShow = new System.Windows.Forms.Label();
             this.lblTodayAttendance = new System.Windows.Forms.Label();
@@ -137,8 +142,6 @@
             this.lblUserName = new System.Windows.Forms.Label();
             this.lblUserNameShow = new System.Windows.Forms.Label();
             this.tmrDateTime = new System.Windows.Forms.Timer(this.components);
-            this.lblRealUserShow = new System.Windows.Forms.Label();
-            this.dgvWPRshow = new System.Windows.Forms.DataGridView();
             this.部門 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.應到 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.實到 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -150,7 +153,9 @@
             this.病假 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.事假 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.曠職 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.其它 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.部門_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.新進人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.排休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.換休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.調休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -158,6 +163,7 @@
             this.病假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.事假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.曠職人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.其它人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabBentoOrder.SuspendLayout();
             this.tpEveryDayOrder.SuspendLayout();
             this.tpOrderRefer.SuspendLayout();
@@ -167,8 +173,8 @@
             this.tpWorkPeople.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleShow)).BeginInit();
             this.tpWorkPeopleRefer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleReferShow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWPRshow)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleReferShow)).BeginInit();
             this.SuspendLayout();
             // 
             // tabBentoOrder
@@ -1037,6 +1043,9 @@
             // 
             // tpWorkPeople
             // 
+            this.tpWorkPeople.Controls.Add(this.btnWorkPeopleOther);
+            this.tpWorkPeople.Controls.Add(this.txtNewPeople);
+            this.tpWorkPeople.Controls.Add(this.btnNewPeople);
             this.tpWorkPeople.Controls.Add(this.btnWPS_2);
             this.tpWorkPeople.Controls.Add(this.dgvWorkPeopleShow);
             this.tpWorkPeople.Controls.Add(this.btnWPS_6);
@@ -1063,10 +1072,42 @@
             this.tpWorkPeople.Text = "每日出勤登記";
             this.tpWorkPeople.UseVisualStyleBackColor = true;
             // 
+            // btnWorkPeopleOther
+            // 
+            this.btnWorkPeopleOther.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnWorkPeopleOther.Location = new System.Drawing.Point(726, 128);
+            this.btnWorkPeopleOther.Name = "btnWorkPeopleOther";
+            this.btnWorkPeopleOther.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnWorkPeopleOther.Size = new System.Drawing.Size(60, 158);
+            this.btnWorkPeopleOther.TabIndex = 95;
+            this.btnWorkPeopleOther.Text = "其它";
+            this.btnWorkPeopleOther.UseVisualStyleBackColor = true;
+            this.btnWorkPeopleOther.Click += new System.EventHandler(this.btnWorkPeopleOther_Click);
+            // 
+            // txtNewPeople
+            // 
+            this.txtNewPeople.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.txtNewPeople.Location = new System.Drawing.Point(666, 336);
+            this.txtNewPeople.Name = "txtNewPeople";
+            this.txtNewPeople.Size = new System.Drawing.Size(120, 29);
+            this.txtNewPeople.TabIndex = 94;
+            // 
+            // btnNewPeople
+            // 
+            this.btnNewPeople.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnNewPeople.Location = new System.Drawing.Point(666, 371);
+            this.btnNewPeople.Name = "btnNewPeople";
+            this.btnNewPeople.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnNewPeople.Size = new System.Drawing.Size(120, 35);
+            this.btnNewPeople.TabIndex = 93;
+            this.btnNewPeople.Text = "新進人員";
+            this.btnNewPeople.UseVisualStyleBackColor = true;
+            this.btnNewPeople.Click += new System.EventHandler(this.btnNewPeople_Click);
+            // 
             // btnWPS_2
             // 
             this.btnWPS_2.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_2.Location = new System.Drawing.Point(583, 251);
+            this.btnWPS_2.Location = new System.Drawing.Point(554, 251);
             this.btnWPS_2.Name = "btnWPS_2";
             this.btnWPS_2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_2.Size = new System.Drawing.Size(80, 35);
@@ -1087,7 +1128,7 @@
             // btnWPS_6
             // 
             this.btnWPS_6.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_6.Location = new System.Drawing.Point(669, 251);
+            this.btnWPS_6.Location = new System.Drawing.Point(640, 251);
             this.btnWPS_6.Name = "btnWPS_6";
             this.btnWPS_6.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_6.Size = new System.Drawing.Size(80, 35);
@@ -1099,7 +1140,7 @@
             // btnWPS_5
             // 
             this.btnWPS_5.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_5.Location = new System.Drawing.Point(669, 210);
+            this.btnWPS_5.Location = new System.Drawing.Point(640, 210);
             this.btnWPS_5.Name = "btnWPS_5";
             this.btnWPS_5.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_5.Size = new System.Drawing.Size(80, 35);
@@ -1111,7 +1152,7 @@
             // btnWPS_4
             // 
             this.btnWPS_4.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_4.Location = new System.Drawing.Point(669, 169);
+            this.btnWPS_4.Location = new System.Drawing.Point(640, 169);
             this.btnWPS_4.Name = "btnWPS_4";
             this.btnWPS_4.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_4.Size = new System.Drawing.Size(80, 35);
@@ -1123,7 +1164,7 @@
             // btnWPS_3
             // 
             this.btnWPS_3.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_3.Location = new System.Drawing.Point(669, 128);
+            this.btnWPS_3.Location = new System.Drawing.Point(640, 128);
             this.btnWPS_3.Name = "btnWPS_3";
             this.btnWPS_3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_3.Size = new System.Drawing.Size(80, 35);
@@ -1135,7 +1176,7 @@
             // btnWPS_1
             // 
             this.btnWPS_1.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_1.Location = new System.Drawing.Point(583, 210);
+            this.btnWPS_1.Location = new System.Drawing.Point(554, 210);
             this.btnWPS_1.Name = "btnWPS_1";
             this.btnWPS_1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_1.Size = new System.Drawing.Size(80, 35);
@@ -1147,7 +1188,7 @@
             // btnWPS_0
             // 
             this.btnWPS_0.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_0.Location = new System.Drawing.Point(583, 169);
+            this.btnWPS_0.Location = new System.Drawing.Point(554, 169);
             this.btnWPS_0.Name = "btnWPS_0";
             this.btnWPS_0.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_0.Size = new System.Drawing.Size(80, 35);
@@ -1160,7 +1201,7 @@
             // 
             this.rdoClassPM.AutoSize = true;
             this.rdoClassPM.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.rdoClassPM.Location = new System.Drawing.Point(692, 60);
+            this.rdoClassPM.Location = new System.Drawing.Point(663, 60);
             this.rdoClassPM.Name = "rdoClassPM";
             this.rdoClassPM.Size = new System.Drawing.Size(57, 23);
             this.rdoClassPM.TabIndex = 83;
@@ -1172,7 +1213,7 @@
             // 
             this.rdoClassAM.AutoSize = true;
             this.rdoClassAM.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.rdoClassAM.Location = new System.Drawing.Point(629, 60);
+            this.rdoClassAM.Location = new System.Drawing.Point(600, 60);
             this.rdoClassAM.Name = "rdoClassAM";
             this.rdoClassAM.Size = new System.Drawing.Size(57, 23);
             this.rdoClassAM.TabIndex = 82;
@@ -1184,7 +1225,7 @@
             // 
             this.lblClass.AutoSize = true;
             this.lblClass.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lblClass.Location = new System.Drawing.Point(579, 61);
+            this.lblClass.Location = new System.Drawing.Point(550, 61);
             this.lblClass.Name = "lblClass";
             this.lblClass.Size = new System.Drawing.Size(57, 20);
             this.lblClass.TabIndex = 84;
@@ -1193,7 +1234,7 @@
             // btnWPS_Null
             // 
             this.btnWPS_Null.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnWPS_Null.Location = new System.Drawing.Point(583, 128);
+            this.btnWPS_Null.Location = new System.Drawing.Point(554, 128);
             this.btnWPS_Null.Name = "btnWPS_Null";
             this.btnWPS_Null.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnWPS_Null.Size = new System.Drawing.Size(80, 35);
@@ -1205,7 +1246,7 @@
             // btnSelectWorkPeopleAll
             // 
             this.btnSelectWorkPeopleAll.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnSelectWorkPeopleAll.Location = new System.Drawing.Point(476, 187);
+            this.btnSelectWorkPeopleAll.Location = new System.Drawing.Point(476, 61);
             this.btnSelectWorkPeopleAll.Name = "btnSelectWorkPeopleAll";
             this.btnSelectWorkPeopleAll.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnSelectWorkPeopleAll.Size = new System.Drawing.Size(50, 35);
@@ -1217,7 +1258,7 @@
             // btnCancelWorkPeopleAll
             // 
             this.btnCancelWorkPeopleAll.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnCancelWorkPeopleAll.Location = new System.Drawing.Point(476, 228);
+            this.btnCancelWorkPeopleAll.Location = new System.Drawing.Point(476, 102);
             this.btnCancelWorkPeopleAll.Name = "btnCancelWorkPeopleAll";
             this.btnCancelWorkPeopleAll.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnCancelWorkPeopleAll.Size = new System.Drawing.Size(50, 35);
@@ -1230,7 +1271,7 @@
             // 
             this.cboSelectWorkPeopleDepart.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cboSelectWorkPeopleDepart.FormattingEnabled = true;
-            this.cboSelectWorkPeopleDepart.Location = new System.Drawing.Point(628, 89);
+            this.cboSelectWorkPeopleDepart.Location = new System.Drawing.Point(599, 89);
             this.cboSelectWorkPeopleDepart.Name = "cboSelectWorkPeopleDepart";
             this.cboSelectWorkPeopleDepart.Size = new System.Drawing.Size(121, 27);
             this.cboSelectWorkPeopleDepart.TabIndex = 76;
@@ -1240,7 +1281,7 @@
             // 
             this.lblWorkPeopleDepart.AutoSize = true;
             this.lblWorkPeopleDepart.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lblWorkPeopleDepart.Location = new System.Drawing.Point(578, 91);
+            this.lblWorkPeopleDepart.Location = new System.Drawing.Point(549, 91);
             this.lblWorkPeopleDepart.Name = "lblWorkPeopleDepart";
             this.lblWorkPeopleDepart.Size = new System.Drawing.Size(57, 20);
             this.lblWorkPeopleDepart.TabIndex = 77;
@@ -1262,9 +1303,9 @@
             this.lblWorkPeople_Time.Font = new System.Drawing.Font("微軟正黑體", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.lblWorkPeople_Time.Location = new System.Drawing.Point(6, 12);
             this.lblWorkPeople_Time.Name = "lblWorkPeople_Time";
-            this.lblWorkPeople_Time.Size = new System.Drawing.Size(694, 21);
+            this.lblWorkPeople_Time.Size = new System.Drawing.Size(594, 21);
             this.lblWorkPeople_Time.TabIndex = 0;
-            this.lblWorkPeople_Time.Text = "注意~出勤登記的截止時間為早班：0900前、晚班：2100前，請務必在規定時段以前登記完畢！";
+            this.lblWorkPeople_Time.Text = "注意~出勤登記的截止時間為每天早上09:00前，請務必在規定時段以前登記完畢！";
             // 
             // tpWorkPeopleRefer
             // 
@@ -1284,6 +1325,36 @@
             this.tpWorkPeopleRefer.TabIndex = 4;
             this.tpWorkPeopleRefer.Text = "每日出勤查詢";
             this.tpWorkPeopleRefer.UseVisualStyleBackColor = true;
+            // 
+            // dgvWPRshow
+            // 
+            this.dgvWPRshow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvWPRshow.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.部門_1,
+            this.新進人員,
+            this.排休人員,
+            this.換休人員,
+            this.調休人員,
+            this.特休人員,
+            this.病假人員,
+            this.事假人員,
+            this.曠職人員,
+            this.其它人員});
+            this.dgvWPRshow.Location = new System.Drawing.Point(6, 309);
+            this.dgvWPRshow.Name = "dgvWPRshow";
+            this.dgvWPRshow.RowTemplate.Height = 24;
+            this.dgvWPRshow.Size = new System.Drawing.Size(780, 220);
+            this.dgvWPRshow.TabIndex = 8;
+            // 
+            // lblRealUserShow
+            // 
+            this.lblRealUserShow.AutoSize = true;
+            this.lblRealUserShow.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblRealUserShow.Location = new System.Drawing.Point(86, 48);
+            this.lblRealUserShow.Name = "lblRealUserShow";
+            this.lblRealUserShow.Size = new System.Drawing.Size(116, 20);
+            this.lblRealUserShow.TabIndex = 7;
+            this.lblRealUserShow.Text = "RealUserShow";
             // 
             // lblRealUser
             // 
@@ -1360,7 +1431,8 @@
             this.特休,
             this.病假,
             this.事假,
-            this.曠職});
+            this.曠職,
+            this.其它});
             this.dgvWorkPeopleReferShow.Location = new System.Drawing.Point(6, 83);
             this.dgvWorkPeopleReferShow.Name = "dgvWorkPeopleReferShow";
             this.dgvWorkPeopleReferShow.RowTemplate.Height = 24;
@@ -1410,34 +1482,6 @@
             // tmrDateTime
             // 
             this.tmrDateTime.Tick += new System.EventHandler(this.tmrDateTime_Tick);
-            // 
-            // lblRealUserShow
-            // 
-            this.lblRealUserShow.AutoSize = true;
-            this.lblRealUserShow.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lblRealUserShow.Location = new System.Drawing.Point(86, 48);
-            this.lblRealUserShow.Name = "lblRealUserShow";
-            this.lblRealUserShow.Size = new System.Drawing.Size(116, 20);
-            this.lblRealUserShow.TabIndex = 7;
-            this.lblRealUserShow.Text = "RealUserShow";
-            // 
-            // dgvWPRshow
-            // 
-            this.dgvWPRshow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvWPRshow.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.部門_1,
-            this.排休人員,
-            this.換休人員,
-            this.調休人員,
-            this.特休人員,
-            this.病假人員,
-            this.事假人員,
-            this.曠職人員});
-            this.dgvWPRshow.Location = new System.Drawing.Point(6, 309);
-            this.dgvWPRshow.Name = "dgvWPRshow";
-            this.dgvWPRshow.RowTemplate.Height = 24;
-            this.dgvWPRshow.Size = new System.Drawing.Size(780, 220);
-            this.dgvWPRshow.TabIndex = 8;
             // 
             // 部門
             // 
@@ -1505,11 +1549,23 @@
             this.曠職.Name = "曠職";
             this.曠職.Width = 55;
             // 
+            // 其它
+            // 
+            this.其它.HeaderText = "其它";
+            this.其它.Name = "其它";
+            this.其它.Width = 55;
+            // 
             // 部門_1
             // 
             this.部門_1.HeaderText = "部門";
             this.部門_1.Name = "部門_1";
             this.部門_1.Width = 70;
+            // 
+            // 新進人員
+            // 
+            this.新進人員.HeaderText = "新進人員";
+            this.新進人員.Name = "新進人員";
+            this.新進人員.Width = 130;
             // 
             // 排休人員
             // 
@@ -1553,6 +1609,12 @@
             this.曠職人員.Name = "曠職人員";
             this.曠職人員.Width = 130;
             // 
+            // 其它人員
+            // 
+            this.其它人員.HeaderText = "其它人員";
+            this.其它人員.Name = "其它人員";
+            this.其它人員.Width = 130;
+            // 
             // BentoOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1584,8 +1646,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleShow)).EndInit();
             this.tpWorkPeopleRefer.ResumeLayout(false);
             this.tpWorkPeopleRefer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleReferShow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWPRshow)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleReferShow)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1701,6 +1763,19 @@
         private System.Windows.Forms.Label lblRealUser;
         private System.Windows.Forms.Label lblRealUserShow;
         private System.Windows.Forms.DataGridView dgvWPRshow;
+        private System.Windows.Forms.TextBox txtNewPeople;
+        private System.Windows.Forms.Button btnWorkPeopleOther;
+        public System.Windows.Forms.Button btnNewPeople;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 部門_1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 新進人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 排休人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 換休人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 調休人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 特休人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 病假人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 事假人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 曠職人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 其它人員;
         private System.Windows.Forms.DataGridViewTextBoxColumn 部門;
         private System.Windows.Forms.DataGridViewTextBoxColumn 應到;
         private System.Windows.Forms.DataGridViewTextBoxColumn 實到;
@@ -1712,14 +1787,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn 病假;
         private System.Windows.Forms.DataGridViewTextBoxColumn 事假;
         private System.Windows.Forms.DataGridViewTextBoxColumn 曠職;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 部門_1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 排休人員;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 換休人員;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 調休人員;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 特休人員;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 病假人員;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 事假人員;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 曠職人員;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 其它;
     }
 }
 

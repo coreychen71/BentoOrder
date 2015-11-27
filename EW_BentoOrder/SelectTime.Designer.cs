@@ -42,16 +42,13 @@
             // 
             this.btnSTSend.Click += new System.EventHandler(this.btnSTSend_Click);
             // 
-            // btnSTCancel
-            // 
-            // 
             // SelectTime
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(334, 211);
             this.Name = "SelectTime";
-            this.Text = "SelectTime";
+            this.Text = "請選擇時間";
             this.ResumeLayout(false);
             this.PerformLayout();
 
