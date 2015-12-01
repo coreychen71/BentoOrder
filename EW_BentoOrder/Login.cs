@@ -50,7 +50,9 @@ namespace EW_BentoOrder
                     bo.btnNewPeople.Enabled = true;
                     bo.btnNewPeople0.Enabled = true;
                     bo.btnNewPeople1.Enabled = true;
+                    bo.btnSendMail.Enabled = true;
                     bo.txtInputName.Enabled = true;
+                    bo.txtNewPeople.Enabled = true;
                 }
                 else
                 {
@@ -64,7 +66,9 @@ namespace EW_BentoOrder
                     bo.btnNewPeople.Enabled = false;
                     bo.btnNewPeople0.Enabled = false;
                     bo.btnNewPeople1.Enabled = false;
+                    bo.btnSendMail.Enabled = false;
                     bo.txtInputName.Enabled = false;
+                    bo.txtNewPeople.Enabled = false;
                 }
                 ReadName.Close();
                 OpenSqlCon.Close();

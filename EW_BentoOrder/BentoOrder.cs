@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
+using System.Net;
+using System.Net.Mail;
 
 namespace EW_BentoOrder
 {
@@ -28,8 +30,8 @@ namespace EW_BentoOrder
         string[] departid = { "EG", "ES", "EM", "EA", "EE", "ER", "EQ", "MM", "EL", "EP", "ET", "EI", "FF", "LF", "DF",
             "CF" };
         //宣告每日出勤登記的時間
-        string st1 = "21:00";
-        string st2 = "21:00";
+        string st1 = "09:00";
+        string st2 = "09:00";
 
         public BentoOrder()
         {
@@ -98,7 +100,7 @@ namespace EW_BentoOrder
                             DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
                             Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
                             chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
-                            "' and Class in (1,2)";
+                            "' and Class in (1,2) and (Status is null or Status in (0,1,2,3,4,5,6,7,8))";
                         SqlComm.Connection = OpensqlConME;
                         OpensqlConME.Open();
                         check = SqlComm.ExecuteReader();
@@ -211,7 +213,7 @@ namespace EW_BentoOrder
                             DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
                             Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
                             chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
-                            "' and Class in (1,2)";
+                            "' and Class in (1,2) and (Status is null or Status in (0,1,2,3,4,5,6,7,8))";
                         SqlComm.Connection = OpensqlConME;
                         OpensqlConME.Open();
                         check = SqlComm.ExecuteReader();
@@ -325,7 +327,7 @@ namespace EW_BentoOrder
                             DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
                             Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
                             chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
-                            "' and Class in (1,2)";
+                            "' and Class in (1,2) and (Status is null or Status in (0,1,2,3,4,5,6,7,8))";
                         SqlComm.Connection = OpensqlConME;
                         OpensqlConME.Open();
                         check = SqlComm.ExecuteReader();
@@ -389,8 +391,8 @@ namespace EW_BentoOrder
             SQLComm = "select Date as '日期',EmpId as '工號',EmpName as '姓名',Class,Status,StartTime as '起始時間'," +
                 "EndTime as '結束時間',Notation as '事由' from WorkPeople where DepartId='" +
                 Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "' and Class in (1,2) and " +
-                "Date between '" + DateTime.Now.ToString("yyyy-MM-dd") + "' and '" +
-                DateTime.Now.ToString("yyyy-MM-dd") + "' order by Date,Class asc";
+                "(Status is null or Status in (0,1,2,3,4,5,6,7,8)) and Date between '" + DateTime.Now.
+                ToString("yyyy-MM-dd") + "' and '" + DateTime.Now.ToString("yyyy-MM-dd") + "' order by Date,Class asc";
             using (SqlConnection sqlcon = new SqlConnection(SQLCon))
             {
                 using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
@@ -399,6 +401,9 @@ namespace EW_BentoOrder
                 }
             }
             string classnum = "1";
+            //宣告早班A和晚班P的變數，供後續加總使用
+            int A = 0;
+            int P = 0;
             Read.Tables["WorkPeople"].Columns.Add("班別", typeof(string));
             Read.Tables["WorkPeople"].Columns.Add("狀態", typeof(string));
             Read.Tables["WorkPeople"].Columns["班別"].SetOrdinal(5);
@@ -407,6 +412,7 @@ namespace EW_BentoOrder
             {
                 if (Read.Tables["WorkPeople"].Rows[i]["Class"].ToString().Trim() == classnum)
                 {
+                    A++;
                     Read.Tables["WorkPeople"].Rows[i]["班別"] = "早班";
                     if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "")
                     {
@@ -451,49 +457,49 @@ namespace EW_BentoOrder
                 }
                 else
                 {
+                    P++;
                     Read.Tables["WorkPeople"].Rows[i]["班別"] = "晚班";
-                    if (Read.Tables["WorkPeople"].Rows[i]["Class"].ToString().Trim() == classnum)
+                    if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "")
                     {
-                        Read.Tables["WorkPeople"].Rows[i]["班別"] = "早班";
-                        if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "正常出勤";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "0")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "排休";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "1")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "換休";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "2")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "調休";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "3")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "特休";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "4")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "病假";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "5")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "事假";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "6")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "曠職";
-                        }
-                        else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "7")
-                        {
-                            Read.Tables["WorkPeople"].Rows[i]["狀態"] = "新進人員";
-                        }
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "正常出勤";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "0")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "排休";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "1")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "換休";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "2")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "調休";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "3")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "特休";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "4")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "病假";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "5")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "事假";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "6")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "曠職";
+                    }
+                    else if (Read.Tables["WorkPeople"].Rows[i]["Status"].ToString().Trim() == "7")
+                    {
+                        Read.Tables["WorkPeople"].Rows[i]["狀態"] = "新進人員";
                     }
                 }
             }
+            //宣告早晚班加總變數
+            int sumAP = A + P;
+            lblWorkPeopleShowNum.Text = "已報出勤：日班" + A + "員、晚班" + P + "員、共" + sumAP + "員。";
             dgvWorkPeopleShow.DataSource = Read.Tables["WorkPeople"];
             dgvWorkPeopleShow.Columns["Class"].Visible = false;
             dgvWorkPeopleShow.Columns["Status"].Visible = false;
@@ -634,63 +640,63 @@ namespace EW_BentoOrder
                                 }
                             }
                             //先判斷各假別的List是否有值，若有值，才開始將List的值塞進陣列
-                            if(A1.Count()>0)
+                            if (A1.Count() > 0)
                             {
                                 for (int A = 0; A < A1.Count(); A++)
                                 {
                                     all1[A] = A1[A];
                                 }
                             }
-                            else if (A2.Count() > 0)
+                            if (A2.Count() > 0)
                             {
                                 for (int A = 0; A < A2.Count(); A++)
                                 {
                                     all2[A] = A2[A];
                                 }
                             }
-                            else if (A3.Count() > 0)
+                            if (A3.Count() > 0)
                             {
                                 for (int A = 0; A < A3.Count(); A++)
                                 {
                                     all3[A] = A3[A];
                                 }
                             }
-                            else if (A4.Count() > 0)
+                            if (A4.Count() > 0)
                             {
                                 for (int A = 0; A < A4.Count(); A++)
                                 {
                                     all4[A] = A4[A];
                                 }
                             }
-                            else if (A5.Count() > 0)
+                            if (A5.Count() > 0)
                             {
                                 for (int A = 0; A < A5.Count(); A++)
                                 {
                                     all5[A] = A5[A];
                                 }
                             }
-                            else if (A6.Count() > 0)
+                            if (A6.Count() > 0)
                             {
                                 for (int A = 0; A < A6.Count(); A++)
                                 {
                                     all6[A] = A6[A];
                                 }
                             }
-                            else if (A7.Count() > 0)
+                            if (A7.Count() > 0)
                             {
                                 for (int A = 0; A < A7.Count(); A++)
                                 {
                                     all7[A] = A7[A];
                                 }
                             }
-                            else if (A8.Count() > 0)
+                            if (A8.Count() > 0)
                             {
                                 for (int A = 0; A < A8.Count(); A++)
                                 {
                                     all8[A] = A8[A];
                                 }
                             }
-                            else if (A9.Count() > 0)
+                            if (A9.Count() > 0)
                             {
                                 for (int A = 0; A < A9.Count(); A++)
                                 {
@@ -726,9 +732,6 @@ namespace EW_BentoOrder
                         dgvWPRshow.Rows[i].Cells["特休人員"].Value = all4[0] + "  " + all4[1] + "  " + all4[2] +
                             "\r\n" + all4[3] + "  " + all4[4] + "  " + all4[5] + "\r\n" + all4[6] + "  " + all4[7] +
                             "  " + all4[8] + "  " + all4[9];
-                        dgvWPRshow.Rows[i].Cells["換休人員"].Value = all2[0] + "  " + all2[1] + "  " + all2[2] +
-                            "\r\n" + all2[3] + "  " + all2[4] + "  " + all2[5] + "\r\n" + all2[6] + "  " + all2[7] +
-                            "  " + all2[8] + "  " + all2[9];
                         dgvWPRshow.Rows[i].Cells["病假人員"].Value = all5[0] + "  " + all5[1] + "  " + all5[2] +
                             "\r\n" + all5[3] + "  " + all5[4] + "  " + all5[5] + "\r\n" + all5[6] + "  " + all5[7] +
                             "  " + all5[8] + "  " + all5[9];
@@ -757,12 +760,12 @@ namespace EW_BentoOrder
                 {
                     DataSet Read = new DataSet();
                     Load.Fill(Read, "UserNum");
-                    for(int i=0;i< Read.Tables["UserNum"].Rows.Count;i++)
+                    for (int i = 0; i < Read.Tables["UserNum"].Rows.Count; i++)
                     {
                         //將管理部的在職人數減去1(掛名人員)
-                        if(Read.Tables["UserNum"].Rows[i][0].ToString().Trim()=="EM")
+                        if (Read.Tables["UserNum"].Rows[i][0].ToString().Trim() == "EM")
                         {
-                            int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1]))-1;
+                            int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1])) - 1;
                             Read.Tables["UserNum"].Rows[i][1] = x.ToString();
                         }
                         //將廠長室的在職人數減去2(掛名人員)
@@ -772,17 +775,17 @@ namespace EW_BentoOrder
                             Read.Tables["UserNum"].Rows[i][1] = x.ToString();
                         }
                         //先將Read.Tables的部門代碼轉成部門名稱
-                        for (int x=0;x<departid.Count();x++)
+                        for (int x = 0; x < departid.Count(); x++)
                         {
-                            if(Read.Tables["UserNum"].Rows[i][0].ToString().Trim()==departid[x])
+                            if (Read.Tables["UserNum"].Rows[i][0].ToString().Trim() == departid[x])
                             {
                                 Read.Tables["UserNum"].Rows[i][0] = depart[x];
                             }
                         }
                         //若Read.Tables的部門名稱等於DataGridView的部門名稱，則將在職人數帶入欄位
-                        for(int s=0;s<dgvWorkPeopleReferShow.Rows.Count-1;s++)
+                        for (int s = 0; s < dgvWorkPeopleReferShow.Rows.Count - 1; s++)
                         {
-                            if(dgvWorkPeopleReferShow.Rows[s].Cells[0].Value.ToString().Trim()==
+                            if (dgvWorkPeopleReferShow.Rows[s].Cells[0].Value.ToString().Trim() ==
                                 Read.Tables["UserNum"].Rows[i][0].ToString().Trim())
                             {
                                 dgvWorkPeopleReferShow.Rows[s].Cells[1].Value = Read.Tables["UserNum"].Rows[i][1]
@@ -793,11 +796,11 @@ namespace EW_BentoOrder
                 }
             }
             //將DataGridView欄位為0的值改為null
-            for(int i=0;i<dgvWorkPeopleReferShow.Rows.Count-1;i++)
+            for (int i = 0; i < dgvWorkPeopleReferShow.Rows.Count - 1; i++)
             {
-                for(int x=0;x<dgvWorkPeopleReferShow.Columns.Count;x++)
+                for (int x = 0; x < dgvWorkPeopleReferShow.Columns.Count; x++)
                 {
-                    if(dgvWorkPeopleReferShow.Rows[i].Cells[x].Value.ToString()=="0")
+                    if (dgvWorkPeopleReferShow.Rows[i].Cells[x].Value.ToString() == "0")
                     {
                         dgvWorkPeopleReferShow.Rows[i].Cells[x].Value = "";
                     }
@@ -809,7 +812,15 @@ namespace EW_BentoOrder
             //將欄位數值帶入陣列
             for (int a = 0; a < dgvWorkPeopleReferShow.Rows.Count - 1; a++)
             {
-                num[a] = float.Parse(dgvWorkPeopleReferShow.Rows[a].Cells[2].Value.ToString());
+                //判斷欄位值是否為null，若為null，則將陣列填入0，避免程式出錯
+                if (dgvWorkPeopleReferShow.Rows[a].Cells[2].Value.ToString() == "")
+                {
+                    num[a] = 0;
+                }
+                else
+                {
+                    num[a] = float.Parse(dgvWorkPeopleReferShow.Rows[a].Cells[2].Value.ToString());
+                }
             }
             //將陣列加總
             float realusersum = num.Sum();
@@ -817,6 +828,225 @@ namespace EW_BentoOrder
             //實到人數除以應到人數
             float percent = realusersum / alluser;
             lblTodayAttendanceShow.Text = percent.ToString("#0.00%");
+        }
+
+        /// <summary>
+        /// 將出勤統計資料滙出至EXCEL(Two Sheet)，並存在個人系統暫存區
+        /// </summary>
+        private void WPRtoExcelTemp()
+        {
+            //DataGridView沒有資料就不執行
+            if (dgvWorkPeopleReferShow.Rows.Count <= 1 & dgvWPRshow.Rows.Count <= 1)
+            {
+                MessageBox.Show("沒有可滙出的資料！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                return;
+            }
+            else
+            {
+                //建一個excel物件
+                Excel._Application excel = new Excel.Application();
+                //建一個excel物件下的工作簿
+                Excel._Workbook workbook = excel.Workbooks.Add();
+                //建二個excel物件下的工作表
+                Excel._Worksheet worksheet1 = excel.Worksheets.Add();
+                Excel._Worksheet worksheet2 = excel.Worksheets.Add();
+                //宣告表示欄位的英文和數字陣列
+                string[] EnRange = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
+                string[] NumRange = new string[17];
+                //將數字帶入NumRange字串陣列
+                int q = 0;
+                for (int i = 0; i < NumRange.Count(); i++)
+                {
+                    q++;
+                    NumRange[i] = Convert.ToString(q);
+                }
+                try
+                {
+                    string Date = DateTime.Now.ToString("yyyy-MM-dd");
+                    string Temp = Path.GetTempPath();
+                    //設定滙出後的存檔路徑(儲存在桌面)
+                    string SaveFilePath = Temp + Date + ".xls";
+                    //Set Excel Sheet Name
+                    worksheet1.Name = "未出勤名單";
+                    worksheet2.Name = "人數統計";
+
+                    PGB pgb = new PGB();
+                    pgb.progressBar1.Minimum = 0;
+                    pgb.progressBar1.Maximum = (dgvWorkPeopleReferShow.Rows.Count - 1) + (dgvWPRshow.Rows.Count - 1);
+                    pgb.progressBar1.Step = 1;
+                    pgb.progressBar1.Value = 0;
+                    pgb.progressBar1.ForeColor = Color.Pink;
+                    pgb.progressBar1.Style = ProgressBarStyle.Continuous;
+                    pgb.Show();
+                    //填入dgvWPRshow欄位名稱至worksheet1
+                    for (int i = 0; i < dgvWPRshow.Columns.Count; i++)
+                    {
+                        worksheet1.Cells[1, i + 1] = dgvWPRshow.Columns[i].HeaderText;
+                    }
+                    //填入dgvWPRshow資料至worksheet1
+                    for (int i = 0; i < dgvWPRshow.Rows.Count - 1; i++)
+                    {
+                        pgb.progressBar1.Value++;
+                        for (int j = 0; j < dgvWPRshow.Columns.Count; j++)
+                        {
+                            if (dgvWPRshow[j, i].ValueType == typeof(string))
+                            {
+                                worksheet1.Cells[i + 2, j + 1] = "'" + dgvWPRshow[j, i].Value.ToString();
+                            }
+                            else
+                            {
+                                worksheet1.Cells[i + 2, j + 1] = dgvWPRshow[j, i].Value.ToString();
+                            }
+                        }
+                    }
+                    //填入dgvWorkPeopleReferShow欄位名稱至worksheet2
+                    for (int i = 0; i < dgvWorkPeopleReferShow.Columns.Count; i++)
+                    {
+                        worksheet2.Cells[1, i + 1] = dgvWorkPeopleReferShow.Columns[i].HeaderText;
+                    }
+                    //填入dgvWorkPeopleReferShow資料至worksheet2
+                    for (int i = 0; i < dgvWorkPeopleReferShow.Rows.Count - 1; i++)
+                    {
+                        pgb.progressBar1.Value++;
+                        for (int j = 0; j < dgvWorkPeopleReferShow.Columns.Count; j++)
+                        {
+                            if (dgvWorkPeopleReferShow[j, i].ValueType == typeof(string))
+                            {
+                                worksheet2.Cells[i + 2, j + 1] = "'" + dgvWorkPeopleReferShow[j, i].Value.ToString();
+                            }
+                            else
+                            {
+                                worksheet2.Cells[i + 2, j + 1] = dgvWorkPeopleReferShow[j, i].Value.ToString();
+                            }
+                        }
+                    }
+                    //設定滙出後，欄位寛度自動配合資料調整
+                    worksheet1.Cells.EntireRow.AutoFit();
+                    worksheet2.Cells.EntireRow.AutoFit();
+                    //自動調整列高
+                    worksheet1.Cells.EntireColumn.AutoFit();
+                    worksheet2.Cells.EntireColumn.AutoFit();
+                    //用字串陣列下去設定worksheet2欄位格式
+                    for (int i = 0; i < EnRange.Count(); i++)
+                    {
+                        for (int x = 0; x < NumRange.Count(); x++)
+                        {
+                            //設定欄位垂直置中
+                            worksheet2.get_Range(EnRange[i] + NumRange[x]).VerticalAlignment = Excel.XlHAlign.
+                                xlHAlignCenter;
+                            //設定欄位水平置中
+                            worksheet2.get_Range(EnRange[i] + NumRange[x]).HorizontalAlignment = Excel.XlHAlign.
+                                xlHAlignCenter;
+                            //設定欄位框線
+                            worksheet2.get_Range(EnRange[i] + NumRange[x]).Borders.LineStyle = 1;
+                            //設定欄位框線顏色
+                            worksheet2.get_Range(EnRange[i] + NumRange[x]).Borders.Color = Color.White;
+                            //設定字型顏色為White
+                            worksheet2.get_Range(EnRange[i] + NumRange[x]).Font.Color = Color.White;
+                            //設定欄位背景顏色為DodgerBlue
+                            worksheet2.get_Range(EnRange[i] + NumRange[x]).Interior.Color = Color.DodgerBlue;
+                        }
+                    }
+                    //用字串陣列下去設定worksheet1欄位格式
+                    for (int i = 0; i < EnRange.Count()-2; i++)
+                    {
+                        for (int x = 0; x < NumRange.Count(); x++)
+                        {
+                            if (EnRange[i] == "A")
+                            {
+                                worksheet1.get_Range(EnRange[i] + NumRange[x]).ColumnWidth = 10;
+                                worksheet1.get_Range(EnRange[i] + NumRange[x]).HorizontalAlignment = Excel.XlHAlign.
+                                xlHAlignCenter;
+                            }
+                            else if(EnRange[i]=="J")
+                            {
+                                worksheet1.get_Range(EnRange[i] + NumRange[x]).ColumnWidth = 30;
+                            }
+                            else
+                            {
+                                worksheet1.get_Range(EnRange[i] + NumRange[x]).ColumnWidth = 20;
+                            }
+                            worksheet1.get_Range(EnRange[i] + NumRange[x]).VerticalAlignment = Excel.XlHAlign.
+                                xlHAlignCenter;
+                            worksheet1.get_Range(EnRange[i] + NumRange[x]).Borders.LineStyle = 1;
+                            worksheet1.get_Range(EnRange[i] + NumRange[x]).Borders.Color = Color.White;
+                            worksheet1.get_Range(EnRange[i] + NumRange[x]).Font.Color = Color.White;
+                            worksheet1.get_Range(EnRange[i] + NumRange[x]).Interior.Color = Color.DodgerBlue;
+                        }
+                    }
+                    //在第一列插入新列
+                    ((Excel.Range)worksheet1.Cells[1, 1]).EntireRow.Insert(null, null);
+                    ((Excel.Range)worksheet2.Cells[1, 1]).EntireRow.Insert(null, null);
+                    //設定worksheet1(A1)欄位格式
+                    worksheet1.get_Range("A1", "J1").Merge(worksheet1.get_Range("A1", "J1").MergeCells);//合併欄位
+                    worksheet1.get_Range("A1").Value = "長鴻電子-每日未出勤名單";
+                    worksheet1.get_Range("A1").Font.Size = 22;
+                    worksheet1.get_Range("A1").HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+                    worksheet1.get_Range("A1").Borders.LineStyle = 1;
+                    worksheet1.get_Range("A1").Font.Color = Color.White;
+                    worksheet1.get_Range("A1").Interior.Color = Color.DodgerBlue;
+                    //設定worksheet2(A1)欄位格式
+                    worksheet2.get_Range("A1", "L1").Merge(worksheet2.get_Range("A1", "L1").MergeCells);
+                    worksheet2.get_Range("A1").Value = "長鴻電子-每日出勤人數統計表";
+                    worksheet2.get_Range("A1").Font.Size = 22;
+                    worksheet2.get_Range("A1").HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+                    worksheet2.get_Range("A1").Borders.LineStyle = 1;
+                    worksheet2.get_Range("A1").Font.Color = Color.White;
+                    worksheet2.get_Range("A1").Interior.Color = Color.DodgerBlue;
+                    //設定worksheet2最下方二列的格式並填值進去
+                    int RowNum = dgvWorkPeopleReferShow.Rows.Count + 2;
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).Merge(worksheet2.get_Range("C" + RowNum, "G" +
+                        RowNum).MergeCells);
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).Merge(worksheet2.get_Range("H" + RowNum, "L" +
+                        RowNum).MergeCells);
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).Borders.LineStyle = 1;
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).Font.Size = 16;
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).Borders.Color = Color.White;
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).Font.Color = Color.White;
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).Interior.Color = Color.DodgerBlue;
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).Borders.LineStyle = 1;
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).Font.Size = 16;
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).Borders.Color = Color.White;
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).Font.Color = Color.White;
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).Interior.Color = Color.DodgerBlue;
+                    worksheet2.get_Range("C" + RowNum, "G" + RowNum).Value = lblAllUser.Text + lblAllUserShow.Text;
+                    worksheet2.get_Range("H" + RowNum, "L" + RowNum).Value = lblRealUser.Text + lblRealUserShow.Text;
+                    RowNum++;//+1=換下一列
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).Merge(worksheet2.get_Range("C" + RowNum, "L" +
+                        RowNum).MergeCells);
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).Borders.LineStyle = 1;
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).Font.Size = 16;
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).Borders.Color = Color.White;
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).Font.Color = Color.White;
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).Interior.Color = Color.DodgerBlue;
+                    worksheet2.get_Range("C" + RowNum, "L" + RowNum).Value = lblTodayAttendance.Text + 
+                        lblTodayAttendanceShow.Text;
+
+                    //設置禁止彈出覆蓋或儲存的彈跳視窗
+                    excel.DisplayAlerts = false;
+                    excel.AlertBeforeOverwriting = false;
+                    //將檔案儲存到SaveFile指定的位置
+                    excel.ActiveWorkbook.SaveCopyAs(SaveFilePath);
+                    pgb.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    //關閉工作簿和結束Excel程式
+                    excel.Workbooks.Close();
+                    excel.Quit();
+                    //釋放資源
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+                    excel = null;
+                    GC.Collect();
+                }
+            }
         }
 
         private void txtNum_keyPress(object sender, KeyPressEventArgs e)
@@ -837,6 +1067,7 @@ namespace EW_BentoOrder
             lblAllUserShow.Text = "";
             lblTodayAttendanceShow.Text = "";
             lblRealUserShow.Text = "";
+            lblWorkPeopleShowNum.Text = "";
             rtbOrderTimeIllustrate.ForeColor = Color.Red;
             lblOrderNumShow.Text = null;
             txtCompanyName.ReadOnly = true;
@@ -2890,7 +3121,7 @@ namespace EW_BentoOrder
 
         private void btnSendToExcel_Click(object sender, EventArgs e)
         {
-            Microsoft.Office.Interop.Excel.Application excel = null;
+            Excel.Application excel = null;
             try
             {
                 //DataGridView沒有資料就不執行
@@ -3308,7 +3539,7 @@ namespace EW_BentoOrder
             }
         }
 
-        //每日出勤登記-正常
+        //每日出勤登記-正常=null
         private void btnWorkPeopleSend_Click(object sender, EventArgs e)
         {
             if(rdoClassAM.Checked==false & rdoClassPM.Checked==false)
@@ -3366,7 +3597,7 @@ namespace EW_BentoOrder
                             DateTime.Now.ToString("yyyy-MM-dd 23:59:59") + "') and DepartId='" +
                             Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpName='" +
                             chklstWorkPeopleName.CheckedItems[q].ToString().Trim().TrimStart(clear.ToArray()) +
-                            "' and Class in (1,2)";
+                            "' and Class in (1,2) and (Status is null or Status in (0,1,2,3,4,5,6,7,8))";
                         SqlComm.Connection = OpensqlConME;
                         OpensqlConME.Open();
                         check = SqlComm.ExecuteReader();
@@ -3531,7 +3762,7 @@ namespace EW_BentoOrder
                         SqlComm.CommandText = "insert into WorkPeople (Date,EmpId,EmpName,DepartId,Class," +
                             "Status,RegisterPeople,RegisterDate) values ('" + DateTime.Now.ToString("yyyy-MM-dd") +
                             "','EW000','" + txtNewPeople.Text.Trim() + "','" + Read.Tables["DepartId"].Rows[0]
-                            ["DepartId"].ToString().Trim() + "','" + Classnum + "','8','" + lblUserNameShow.Text.
+                            ["DepartId"].ToString().Trim() + "','" + Classnum + "','7','" + lblUserNameShow.Text.
                             ToString() + "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                         SqlComm.Connection = OpensqlConME;
                         SqlComm.ExecuteNonQuery();
@@ -3657,11 +3888,97 @@ namespace EW_BentoOrder
                 }
             }
         }
-
+        
         //每日出勤查詢-全廠統計
         private void btnWorkPeopleReferAll_Click(object sender, EventArgs e)
         {
             WorkPeopleReferAll();
+        }
+
+        //每日出勤登記-取消出勤
+        private void btnCancelWorkPeople_Click(object sender, EventArgs e)
+        {
+            DateTime time = new DateTime();
+            time = DateTime.Now;
+            DateTime t1 = Convert.ToDateTime(st1);
+            DateTime t2 = Convert.ToDateTime(st2);
+            if (time > t1 | time > t2)
+            {
+                MessageBox.Show("已超過每日出勤登記時間！不得取消出勤！" + Environment.NewLine + "請洽詢管理部-人資專員。",
+                    "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+            else
+            {
+                if (MessageBox.Show("您確定要取消人員［"+dgvWorkPeopleShow.CurrentRow.Cells["姓名"].Value.ToString().
+                    Trim()+"］今日出勤嗎？","注意",MessageBoxButtons.OK,MessageBoxIcon.Exclamation)==DialogResult.OK)
+                {
+                    string SQLComm = "update WorkPeople set Status='22',CancelPeople='" + lblUserNameShow.Text +
+                        "',CancelDate='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "' where EmpId='" +
+                        dgvWorkPeopleShow.CurrentRow.Cells["工號"].Value.ToString().Trim() + "' and EmpName='" +
+                        dgvWorkPeopleShow.CurrentRow.Cells["姓名"].Value.ToString().Trim() + "' and Date='" +
+                        DateTime.Now.ToString("yyyy-MM-dd") + "'";
+                    using (SqlConnection sqlcon = new SqlConnection(SQLCon))
+                    {
+                        sqlcon.Open();
+                        using (SqlCommand sqlcomm = new SqlCommand(SQLComm, sqlcon))
+                        {
+                            if(sqlcomm.ExecuteNonQuery()==1)
+                            {
+                                MessageBox.Show("已取消成功！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                    }
+                    RenewWorkPeople(cboSelectWorkPeopleDepart.Text);
+                }
+            }
+        }
+
+        //每日出勤查詢-寄出郵件
+        private void btnSendMail_Click(object sender, EventArgs e)
+        {
+            WPRtoExcelTemp();
+            string temp = Path.GetTempPath();
+            string date = DateTime.Now.ToString("yyyy-MM-dd");
+            string savefilepath = temp + date + ".xls";
+            //建立寄件者地址與名稱
+            MailAddress ReceiverAddress = new MailAddress("sm4@ewpcb.com.tw", "每日出勤統計");
+            //建立收件者地址
+            MailAddress SendAddress = new MailAddress("WorkPeople@ewpcb.com.tw");
+            //建立附加檔案
+            Attachment attachment = new Attachment(savefilepath);
+            //建立E-MAIL相關設定與訊息
+            MailMessage SendMail = new MailMessage(ReceiverAddress, SendAddress);
+            //Mail以HTML格式寄送
+            SendMail.IsBodyHtml = true;
+            //設定信件內容編碼為UTF8
+            SendMail.BodyEncoding = Encoding.UTF8;
+            //設定信件主旨編碼為UTF8
+            SendMail.SubjectEncoding = Encoding.UTF8;
+            //設定信件優先權為普通
+            SendMail.Priority = MailPriority.Normal;
+            SendMail.Subject = DateTime.Now.ToString("yyyy-MM-dd") + " 每日出勤回報！";//主旨
+            SendMail.Body = "每日出勤請詳閱附件。" + "<br/>" + "<br/>" + "-----此封郵件由系統所寄出，請勿直接回覆！-----";//內容
+            SendMail.Attachments.Add(attachment);//加上附件檔案
+            //建立一個信件通訊並設定郵件主機地址與通訊埠號
+            SmtpClient MySmtp = new SmtpClient("ms1.ewpcb.com.tw", 25);
+            //設定寄件者的帳號與密碼
+            MySmtp.Credentials = new NetworkCredential("sm4", "sm4@ew");
+            try
+            {
+                MySmtp.Send(SendMail);
+                MessageBox.Show("信件已成功寄出！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch
+            {
+                Exception error = new Exception();
+                MessageBox.Show(error.Message);
+            }
+            finally
+            {
+                MySmtp = null;
+                SendMail.Dispose();
+                File.Delete(savefilepath);//刪除存放在暂存區的檔案
+            }
         }
     }
 }
