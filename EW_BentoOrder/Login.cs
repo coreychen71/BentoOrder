@@ -53,6 +53,8 @@ namespace EW_BentoOrder
                     bo.btnSendMail.Enabled = true;
                     bo.txtInputName.Enabled = true;
                     bo.txtNewPeople.Enabled = true;
+                    bo.st1 = "23:00";
+                    bo.st2 = "23:00";
                 }
                 else
                 {

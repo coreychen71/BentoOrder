@@ -106,6 +106,7 @@
             this.dtpEndDate = new System.Windows.Forms.DateTimePicker();
             this.dtpStartDate = new System.Windows.Forms.DateTimePicker();
             this.tpWorkPeople = new System.Windows.Forms.TabPage();
+            this.lblWorkPeopleShowNum = new System.Windows.Forms.Label();
             this.btnCancelWorkPeople = new System.Windows.Forms.Button();
             this.btnWorkPeopleOther = new System.Windows.Forms.Button();
             this.txtNewPeople = new System.Windows.Forms.TextBox();
@@ -152,6 +153,7 @@
             this.部門 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.應到 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.實到 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.遲到 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.新進 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.排休 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.換休 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -166,7 +168,6 @@
             this.lblUserName = new System.Windows.Forms.Label();
             this.lblUserNameShow = new System.Windows.Forms.Label();
             this.tmrDateTime = new System.Windows.Forms.Timer(this.components);
-            this.lblWorkPeopleShowNum = new System.Windows.Forms.Label();
             this.tabBentoOrder.SuspendLayout();
             this.tpEveryDayOrder.SuspendLayout();
             this.tpOrderRefer.SuspendLayout();
@@ -1077,6 +1078,16 @@
             this.tpWorkPeople.Text = "每日出勤登記";
             this.tpWorkPeople.UseVisualStyleBackColor = true;
             // 
+            // lblWorkPeopleShowNum
+            // 
+            this.lblWorkPeopleShowNum.AutoSize = true;
+            this.lblWorkPeopleShowNum.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWorkPeopleShowNum.Location = new System.Drawing.Point(6, 287);
+            this.lblWorkPeopleShowNum.Name = "lblWorkPeopleShowNum";
+            this.lblWorkPeopleShowNum.Size = new System.Drawing.Size(181, 20);
+            this.lblWorkPeopleShowNum.TabIndex = 97;
+            this.lblWorkPeopleShowNum.Text = "WorkPeopleShowNum";
+            // 
             // btnCancelWorkPeople
             // 
             this.btnCancelWorkPeople.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
@@ -1433,7 +1444,7 @@
             // 
             this.其它人員.HeaderText = "其它人員";
             this.其它人員.Name = "其它人員";
-            this.其它人員.Width = 150;
+            this.其它人員.Width = 152;
             // 
             // lblRealUserShow
             // 
@@ -1513,6 +1524,7 @@
             this.部門,
             this.應到,
             this.實到,
+            this.遲到,
             this.新進,
             this.排休,
             this.換休,
@@ -1545,6 +1557,12 @@
             this.實到.HeaderText = "實到";
             this.實到.Name = "實到";
             this.實到.Width = 55;
+            // 
+            // 遲到
+            // 
+            this.遲到.HeaderText = "遲到";
+            this.遲到.Name = "遲到";
+            this.遲到.Width = 55;
             // 
             // 新進
             // 
@@ -1644,16 +1662,6 @@
             // 
             this.tmrDateTime.Tick += new System.EventHandler(this.tmrDateTime_Tick);
             // 
-            // lblWorkPeopleShowNum
-            // 
-            this.lblWorkPeopleShowNum.AutoSize = true;
-            this.lblWorkPeopleShowNum.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lblWorkPeopleShowNum.Location = new System.Drawing.Point(6, 287);
-            this.lblWorkPeopleShowNum.Name = "lblWorkPeopleShowNum";
-            this.lblWorkPeopleShowNum.Size = new System.Drawing.Size(181, 20);
-            this.lblWorkPeopleShowNum.TabIndex = 97;
-            this.lblWorkPeopleShowNum.Text = "WorkPeopleShowNum";
-            // 
             // BentoOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1669,7 +1677,7 @@
             this.MaximizeBox = false;
             this.Name = "BentoOrder";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "長鴻電子-每日報餐登記表 v3.1";
+            this.Text = "長鴻電子-每日報餐登記表 v3.2";
             this.Load += new System.EventHandler(this.BentoOrder_Load);
             this.tabBentoOrder.ResumeLayout(false);
             this.tpEveryDayOrder.ResumeLayout(false);
@@ -1804,9 +1812,14 @@
         private System.Windows.Forms.DataGridView dgvWPRshow;
         private System.Windows.Forms.Button btnWorkPeopleOther;
         public System.Windows.Forms.Button btnNewPeople;
+        public System.Windows.Forms.Button btnSendMail;
+        public System.Windows.Forms.TextBox txtNewPeople;
+        private System.Windows.Forms.Button btnCancelWorkPeople;
+        private System.Windows.Forms.Label lblWorkPeopleShowNum;
         private System.Windows.Forms.DataGridViewTextBoxColumn 部門;
         private System.Windows.Forms.DataGridViewTextBoxColumn 應到;
         private System.Windows.Forms.DataGridViewTextBoxColumn 實到;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 遲到;
         private System.Windows.Forms.DataGridViewTextBoxColumn 新進;
         private System.Windows.Forms.DataGridViewTextBoxColumn 排休;
         private System.Windows.Forms.DataGridViewTextBoxColumn 換休;
@@ -1826,10 +1839,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn 事假人員;
         private System.Windows.Forms.DataGridViewTextBoxColumn 曠職人員;
         private System.Windows.Forms.DataGridViewTextBoxColumn 其它人員;
-        public System.Windows.Forms.Button btnSendMail;
-        public System.Windows.Forms.TextBox txtNewPeople;
-        private System.Windows.Forms.Button btnCancelWorkPeople;
-        private System.Windows.Forms.Label lblWorkPeopleShowNum;
     }
 }
 

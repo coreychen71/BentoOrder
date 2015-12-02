@@ -49,6 +49,7 @@
             this.cboWorkPeopleOther.FormattingEnabled = true;
             this.cboWorkPeopleOther.Items.AddRange(new object[] {
             "請選擇",
+            "遲到",
             "待補",
             "公假",
             "婚假",
