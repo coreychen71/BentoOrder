@@ -70,8 +70,7 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label lblExplain;
         public System.Windows.Forms.ProgressBar progressBar1;
+        public System.Windows.Forms.Label lblExplain;
     }
 }

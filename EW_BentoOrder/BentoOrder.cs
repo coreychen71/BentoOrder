@@ -537,9 +537,8 @@ namespace EW_BentoOrder
                 row1.Add(new object[] { depart[i] });
             }
             //撈出當天的出勤資料，不分早晚班
-            string SQLComm = "select DepartId,Status,EmpName,Notation from WorkPeople where Class in (1,2) and " +
-                "Date between '" + DateTime.Now.ToString("yyyy-MM-dd") + "' and '" +
-                DateTime.Now.ToString("yyyy-MM-dd") + "'";
+            string SQLComm = "select DepartId,Status,EmpName,Notation,StartTime,EndTime from WorkPeople where Class " +
+                "in (1,2) and Date='" + DateTime.Now.Date.ToString("yyyy-MM-dd") + "'";
             using (SqlConnection sqlcon = new SqlConnection(SQLCon))
             {
                 using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
@@ -572,8 +571,9 @@ namespace EW_BentoOrder
                         List<string> A7 = new List<string>();
                         List<string> A8 = new List<string>();
                         List<string> A9 = new List<string>();
-                        List<string> A5other = new List<string>();//病假原因
-                        List<string> A6other = new List<string>();//事假原因
+                        List<string> A4other = new List<string>();//特休時間
+                        List<string> A5other = new List<string>();//病假原因+時間
+                        List<string> A6other = new List<string>();//事假原因+時間
                         List<string> A9other = new List<string>();//其它原因
                         //宣告假別陣列，每比對完一個部門就把該部門的各List值依序填入陣列
                         string[] all1 = new string[10];
@@ -585,6 +585,7 @@ namespace EW_BentoOrder
                         string[] all7 = new string[10];
                         string[] all8 = new string[10];
                         string[] all9 = new string[20];
+                        string[] all4other = new string[10];
                         string[] all5other = new string[10];
                         string[] all6other = new string[10];
                         string[] all9other = new string[20];
@@ -619,18 +620,24 @@ namespace EW_BentoOrder
                                 {
                                     a4++;
                                     A4.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
+                                    A4other.Add(Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':','0') + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "4")
                                 {
                                     a5++;
                                     A5.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
-                                    A5other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim());
+                                    A5other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim() + " " +
+                                        Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "5")
                                 {
                                     a6++;
                                     A6.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
-                                    A6other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim());
+                                    A6other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim() + " " +
+                                        Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "6")
                                 {
@@ -653,7 +660,9 @@ namespace EW_BentoOrder
                                         a9++;
                                     }
                                     A9.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
-                                    A9other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim());
+                                    A9other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim() + " " +
+                                        Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
                                 }
                             }
                             //先判斷各假別的List是否有值，若有值，才開始將List的值塞進陣列
@@ -683,6 +692,10 @@ namespace EW_BentoOrder
                                 for (int A = 0; A < A4.Count(); A++)
                                 {
                                     all4[A] = A4[A];
+                                    if (A4other.Count() > 0)
+                                    {
+                                        all4other[A] = "（" + A4other[A] + "）";
+                                    }
                                 }
                             }
                             if (A5.Count() > 0)
@@ -692,7 +705,7 @@ namespace EW_BentoOrder
                                     all5[A] = A5[A];
                                     if (A5other.Count() > 0)
                                     {
-                                        all5other[A] = "(" + A5other[A] + ")";
+                                        all5other[A] = "（" + A5other[A] + "）";
                                     }
                                 }
                             }
@@ -703,7 +716,7 @@ namespace EW_BentoOrder
                                     all6[A] = A6[A];
                                     if (A6other.Count() > 0)
                                     {
-                                        all6other[A] = "(" + A6other[A] + ")";
+                                        all6other[A] = "（" + A6other[A] + "）";
                                     }
                                 }
                             }
@@ -755,9 +768,11 @@ namespace EW_BentoOrder
                         dgvWPRshow.Rows[i].Cells["調休人員"].Value = all3[0] + "  " + all3[1] + "  " + all3[2] +
                             "\r\n" + all3[3] + "  " + all3[4] + "  " + all3[5] + "\r\n" + all3[6] + "  " + all3[7] +
                             "  " + all3[8] + "  " + all3[9];
-                        dgvWPRshow.Rows[i].Cells["特休人員"].Value = all4[0] + "  " + all4[1] + "  " + all4[2] +
-                            "\r\n" + all4[3] + "  " + all4[4] + "  " + all4[5] + "\r\n" + all4[6] + "  " + all4[7] +
-                            "  " + all4[8] + "  " + all4[9];
+                        dgvWPRshow.Rows[i].Cells["特休人員"].Value = all4[0] + all4other[0] + "  " + all4[1] +
+                            all4other[1] + "  " + all4[2] + all4other[2] + "  " + all4[3] + all4other[3] + "  " +
+                            all4[4] + all4other[4] + "  " + all4[5] + all4other[5] + "  " + all4[6] + all4other[6] +
+                            "  " + all4[7] + all4other[7] + "  " + all4[8] + all4other[8] + "  " + all4[9] +
+                            all4other[9];
                         dgvWPRshow.Rows[i].Cells["病假人員"].Value = all5[0] + all5other[0] + "  " + all5[1] +
                             all5other[1] + "  " + all5[2] + all5other[2] + "  " + all5[3] + all5other[3] + "  " +
                             all5[4] + all5other[4] + "  " + all5[5] + all5other[5] + "  " + all5[6] + all5other[6] +
@@ -919,7 +934,8 @@ namespace EW_BentoOrder
 
                     PGB pgb = new PGB();
                     pgb.progressBar1.Minimum = 0;
-                    pgb.progressBar1.Maximum = (dgvWorkPeopleReferShow.Rows.Count - 1) + (dgvWPRshow.Rows.Count - 1);
+                    pgb.progressBar1.Maximum = ((dgvWorkPeopleReferShow.Rows.Count - 1) + (dgvWPRshow.Rows.Count - 1) +
+                        (EnRange.Count() * 2));
                     pgb.progressBar1.Step = 1;
                     pgb.progressBar1.Value = 0;
                     pgb.progressBar1.ForeColor = Color.Pink;
@@ -954,7 +970,7 @@ namespace EW_BentoOrder
                     //填入dgvWorkPeopleReferShow資料至worksheet2
                     for (int i = 0; i < dgvWorkPeopleReferShow.Rows.Count - 1; i++)
                     {
-                        pgb.progressBar1.Value++;
+                         pgb.progressBar1.Value++;
                         for (int j = 0; j < dgvWorkPeopleReferShow.Columns.Count; j++)
                         {
                             if (dgvWorkPeopleReferShow[j, i].ValueType == typeof(string))
@@ -976,6 +992,7 @@ namespace EW_BentoOrder
                     //用字串陣列下去設定worksheet2欄位格式
                     for (int i = 0; i < EnRange.Count(); i++)
                     {
+                        pgb.progressBar1.Value++;
                         for (int x = 0; x < NumRange.Count(); x++)
                         {
                             //設定欄位垂直置中
@@ -997,6 +1014,7 @@ namespace EW_BentoOrder
                     //用字串陣列下去設定worksheet1欄位格式
                     for (int i = 0; i < EnRange.Count()-3; i++)
                     {
+                        pgb.progressBar1.Value++;
                         for (int x = 0; x < NumRange.Count(); x++)
                         {
                             if (EnRange[i] == "A")

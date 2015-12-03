@@ -132,16 +132,6 @@
             this.tpWorkPeopleRefer = new System.Windows.Forms.TabPage();
             this.btnSendMail = new System.Windows.Forms.Button();
             this.dgvWPRshow = new System.Windows.Forms.DataGridView();
-            this.部門_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.新進人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.排休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.換休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.調休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.特休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.病假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.事假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.曠職人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.其它人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblRealUserShow = new System.Windows.Forms.Label();
             this.lblRealUser = new System.Windows.Forms.Label();
             this.lblTodayAttendanceShow = new System.Windows.Forms.Label();
@@ -168,6 +158,16 @@
             this.lblUserName = new System.Windows.Forms.Label();
             this.lblUserNameShow = new System.Windows.Forms.Label();
             this.tmrDateTime = new System.Windows.Forms.Timer(this.components);
+            this.部門_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.新進人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.排休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.換休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.調休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.特休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.病假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.事假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.曠職人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.其它人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabBentoOrder.SuspendLayout();
             this.tpEveryDayOrder.SuspendLayout();
             this.tpOrderRefer.SuspendLayout();
@@ -1386,66 +1386,6 @@
             this.dgvWPRshow.Size = new System.Drawing.Size(780, 220);
             this.dgvWPRshow.TabIndex = 8;
             // 
-            // 部門_1
-            // 
-            this.部門_1.HeaderText = "部門";
-            this.部門_1.Name = "部門_1";
-            this.部門_1.Width = 70;
-            // 
-            // 新進人員
-            // 
-            this.新進人員.HeaderText = "新進人員";
-            this.新進人員.Name = "新進人員";
-            this.新進人員.Width = 130;
-            // 
-            // 排休人員
-            // 
-            this.排休人員.HeaderText = "排休人員";
-            this.排休人員.Name = "排休人員";
-            this.排休人員.Width = 130;
-            // 
-            // 換休人員
-            // 
-            this.換休人員.HeaderText = "換休人員";
-            this.換休人員.Name = "換休人員";
-            this.換休人員.Width = 130;
-            // 
-            // 調休人員
-            // 
-            this.調休人員.HeaderText = "調休人員";
-            this.調休人員.Name = "調休人員";
-            this.調休人員.Width = 130;
-            // 
-            // 特休人員
-            // 
-            this.特休人員.HeaderText = "特休人員";
-            this.特休人員.Name = "特休人員";
-            this.特休人員.Width = 130;
-            // 
-            // 病假人員
-            // 
-            this.病假人員.HeaderText = "病假人員";
-            this.病假人員.Name = "病假人員";
-            this.病假人員.Width = 130;
-            // 
-            // 事假人員
-            // 
-            this.事假人員.HeaderText = "事假人員";
-            this.事假人員.Name = "事假人員";
-            this.事假人員.Width = 130;
-            // 
-            // 曠職人員
-            // 
-            this.曠職人員.HeaderText = "曠職人員";
-            this.曠職人員.Name = "曠職人員";
-            this.曠職人員.Width = 130;
-            // 
-            // 其它人員
-            // 
-            this.其它人員.HeaderText = "其它人員";
-            this.其它人員.Name = "其它人員";
-            this.其它人員.Width = 152;
-            // 
             // lblRealUserShow
             // 
             this.lblRealUserShow.AutoSize = true;
@@ -1662,6 +1602,66 @@
             // 
             this.tmrDateTime.Tick += new System.EventHandler(this.tmrDateTime_Tick);
             // 
+            // 部門_1
+            // 
+            this.部門_1.HeaderText = "部門";
+            this.部門_1.Name = "部門_1";
+            this.部門_1.Width = 70;
+            // 
+            // 新進人員
+            // 
+            this.新進人員.HeaderText = "新進人員";
+            this.新進人員.Name = "新進人員";
+            this.新進人員.Width = 130;
+            // 
+            // 排休人員
+            // 
+            this.排休人員.HeaderText = "排休人員";
+            this.排休人員.Name = "排休人員";
+            this.排休人員.Width = 130;
+            // 
+            // 換休人員
+            // 
+            this.換休人員.HeaderText = "換休人員";
+            this.換休人員.Name = "換休人員";
+            this.換休人員.Width = 130;
+            // 
+            // 調休人員
+            // 
+            this.調休人員.HeaderText = "調休人員";
+            this.調休人員.Name = "調休人員";
+            this.調休人員.Width = 130;
+            // 
+            // 特休人員
+            // 
+            this.特休人員.HeaderText = "特休人員";
+            this.特休人員.Name = "特休人員";
+            this.特休人員.Width = 130;
+            // 
+            // 病假人員
+            // 
+            this.病假人員.HeaderText = "病假人員";
+            this.病假人員.Name = "病假人員";
+            this.病假人員.Width = 130;
+            // 
+            // 事假人員
+            // 
+            this.事假人員.HeaderText = "事假人員";
+            this.事假人員.Name = "事假人員";
+            this.事假人員.Width = 130;
+            // 
+            // 曠職人員
+            // 
+            this.曠職人員.HeaderText = "曠職人員";
+            this.曠職人員.Name = "曠職人員";
+            this.曠職人員.Width = 130;
+            // 
+            // 其它人員
+            // 
+            this.其它人員.HeaderText = "其它人員";
+            this.其它人員.Name = "其它人員";
+            this.其它人員.Width = 152;
+            // 
             // BentoOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1677,7 +1677,7 @@
             this.MaximizeBox = false;
             this.Name = "BentoOrder";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "長鴻電子-每日報餐登記表 v3.2";
+            this.Text = "長鴻電子-每日報餐登記表 v3.3";
             this.Load += new System.EventHandler(this.BentoOrder_Load);
             this.tabBentoOrder.ResumeLayout(false);
             this.tpEveryDayOrder.ResumeLayout(false);
