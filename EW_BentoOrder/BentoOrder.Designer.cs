@@ -132,6 +132,16 @@
             this.tpWorkPeopleRefer = new System.Windows.Forms.TabPage();
             this.btnSendMail = new System.Windows.Forms.Button();
             this.dgvWPRshow = new System.Windows.Forms.DataGridView();
+            this.部門_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.新進人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.排休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.換休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.調休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.特休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.病假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.事假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.曠職人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.其它人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblRealUserShow = new System.Windows.Forms.Label();
             this.lblRealUser = new System.Windows.Forms.Label();
             this.lblTodayAttendanceShow = new System.Windows.Forms.Label();
@@ -153,21 +163,26 @@
             this.事假 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.曠職 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.其它 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tpWPRManage = new System.Windows.Forms.TabPage();
+            this.btnWPRM_All = new System.Windows.Forms.Button();
+            this.btnWPRM_Condition = new System.Windows.Forms.Button();
+            this.dgvWPR_DataShow = new System.Windows.Forms.DataGridView();
+            this.lblWPR_Info = new System.Windows.Forms.Label();
+            this.txtWPR_EmpName = new System.Windows.Forms.TextBox();
+            this.lblWPR_EmpName = new System.Windows.Forms.Label();
+            this.txtWPR_EmpId = new System.Windows.Forms.TextBox();
+            this.lstWPR_ListOther = new System.Windows.Forms.ListBox();
+            this.lstWPR_List = new System.Windows.Forms.ListBox();
+            this.lblWPR_Method = new System.Windows.Forms.Label();
+            this.lblWPR_EmpId = new System.Windows.Forms.Label();
+            this.dtpWPR_End = new System.Windows.Forms.DateTimePicker();
+            this.dtpWPR_Start = new System.Windows.Forms.DateTimePicker();
+            this.lblWPR_Date = new System.Windows.Forms.Label();
             this.lblDateTime = new System.Windows.Forms.Label();
             this.lblDateTimeShow = new System.Windows.Forms.Label();
             this.lblUserName = new System.Windows.Forms.Label();
             this.lblUserNameShow = new System.Windows.Forms.Label();
             this.tmrDateTime = new System.Windows.Forms.Timer(this.components);
-            this.部門_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.新進人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.排休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.換休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.調休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.特休人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.病假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.事假人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.曠職人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.其它人員 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabBentoOrder.SuspendLayout();
             this.tpEveryDayOrder.SuspendLayout();
             this.tpOrderRefer.SuspendLayout();
@@ -179,6 +194,8 @@
             this.tpWorkPeopleRefer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWPRshow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleReferShow)).BeginInit();
+            this.tpWPRManage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvWPR_DataShow)).BeginInit();
             this.SuspendLayout();
             // 
             // tabBentoOrder
@@ -188,10 +205,11 @@
             this.tabBentoOrder.Controls.Add(this.tpAccount);
             this.tabBentoOrder.Controls.Add(this.tpWorkPeople);
             this.tabBentoOrder.Controls.Add(this.tpWorkPeopleRefer);
-            this.tabBentoOrder.Location = new System.Drawing.Point(12, 28);
+            this.tabBentoOrder.Controls.Add(this.tpWPRManage);
+            this.tabBentoOrder.Location = new System.Drawing.Point(12, 31);
             this.tabBentoOrder.Name = "tabBentoOrder";
             this.tabBentoOrder.SelectedIndex = 0;
-            this.tabBentoOrder.Size = new System.Drawing.Size(800, 561);
+            this.tabBentoOrder.Size = new System.Drawing.Size(800, 558);
             this.tabBentoOrder.TabIndex = 0;
             // 
             // tpEveryDayOrder
@@ -222,7 +240,7 @@
             this.tpEveryDayOrder.Location = new System.Drawing.Point(4, 22);
             this.tpEveryDayOrder.Name = "tpEveryDayOrder";
             this.tpEveryDayOrder.Padding = new System.Windows.Forms.Padding(3);
-            this.tpEveryDayOrder.Size = new System.Drawing.Size(792, 535);
+            this.tpEveryDayOrder.Size = new System.Drawing.Size(792, 532);
             this.tpEveryDayOrder.TabIndex = 0;
             this.tpEveryDayOrder.Text = "每日報餐登記表";
             this.tpEveryDayOrder.UseVisualStyleBackColor = true;
@@ -493,7 +511,7 @@
             this.tpOrderRefer.Location = new System.Drawing.Point(4, 22);
             this.tpOrderRefer.Name = "tpOrderRefer";
             this.tpOrderRefer.Padding = new System.Windows.Forms.Padding(3);
-            this.tpOrderRefer.Size = new System.Drawing.Size(792, 535);
+            this.tpOrderRefer.Size = new System.Drawing.Size(792, 532);
             this.tpOrderRefer.TabIndex = 1;
             this.tpOrderRefer.Text = "每日訂餐查詢、取消";
             this.tpOrderRefer.UseVisualStyleBackColor = true;
@@ -738,7 +756,7 @@
             this.tpAccount.Location = new System.Drawing.Point(4, 22);
             this.tpAccount.Name = "tpAccount";
             this.tpAccount.Padding = new System.Windows.Forms.Padding(3);
-            this.tpAccount.Size = new System.Drawing.Size(792, 535);
+            this.tpAccount.Size = new System.Drawing.Size(792, 532);
             this.tpAccount.TabIndex = 2;
             this.tpAccount.Text = "月結統計";
             this.tpAccount.UseVisualStyleBackColor = true;
@@ -1073,7 +1091,7 @@
             this.tpWorkPeople.Location = new System.Drawing.Point(4, 22);
             this.tpWorkPeople.Name = "tpWorkPeople";
             this.tpWorkPeople.Padding = new System.Windows.Forms.Padding(3);
-            this.tpWorkPeople.Size = new System.Drawing.Size(792, 535);
+            this.tpWorkPeople.Size = new System.Drawing.Size(792, 532);
             this.tpWorkPeople.TabIndex = 3;
             this.tpWorkPeople.Text = "每日出勤登記";
             this.tpWorkPeople.UseVisualStyleBackColor = true;
@@ -1350,9 +1368,9 @@
             this.tpWorkPeopleRefer.Location = new System.Drawing.Point(4, 22);
             this.tpWorkPeopleRefer.Name = "tpWorkPeopleRefer";
             this.tpWorkPeopleRefer.Padding = new System.Windows.Forms.Padding(3);
-            this.tpWorkPeopleRefer.Size = new System.Drawing.Size(792, 535);
+            this.tpWorkPeopleRefer.Size = new System.Drawing.Size(792, 532);
             this.tpWorkPeopleRefer.TabIndex = 4;
-            this.tpWorkPeopleRefer.Text = "每日出勤查詢";
+            this.tpWorkPeopleRefer.Text = "每日出勤統計";
             this.tpWorkPeopleRefer.UseVisualStyleBackColor = true;
             // 
             // btnSendMail
@@ -1385,6 +1403,66 @@
             this.dgvWPRshow.RowTemplate.Height = 24;
             this.dgvWPRshow.Size = new System.Drawing.Size(780, 220);
             this.dgvWPRshow.TabIndex = 8;
+            // 
+            // 部門_1
+            // 
+            this.部門_1.HeaderText = "部門";
+            this.部門_1.Name = "部門_1";
+            this.部門_1.Width = 70;
+            // 
+            // 新進人員
+            // 
+            this.新進人員.HeaderText = "新進人員";
+            this.新進人員.Name = "新進人員";
+            this.新進人員.Width = 130;
+            // 
+            // 排休人員
+            // 
+            this.排休人員.HeaderText = "排休人員";
+            this.排休人員.Name = "排休人員";
+            this.排休人員.Width = 130;
+            // 
+            // 換休人員
+            // 
+            this.換休人員.HeaderText = "換休人員";
+            this.換休人員.Name = "換休人員";
+            this.換休人員.Width = 130;
+            // 
+            // 調休人員
+            // 
+            this.調休人員.HeaderText = "調休人員";
+            this.調休人員.Name = "調休人員";
+            this.調休人員.Width = 130;
+            // 
+            // 特休人員
+            // 
+            this.特休人員.HeaderText = "特休人員";
+            this.特休人員.Name = "特休人員";
+            this.特休人員.Width = 130;
+            // 
+            // 病假人員
+            // 
+            this.病假人員.HeaderText = "病假人員";
+            this.病假人員.Name = "病假人員";
+            this.病假人員.Width = 130;
+            // 
+            // 事假人員
+            // 
+            this.事假人員.HeaderText = "事假人員";
+            this.事假人員.Name = "事假人員";
+            this.事假人員.Width = 130;
+            // 
+            // 曠職人員
+            // 
+            this.曠職人員.HeaderText = "曠職人員";
+            this.曠職人員.Name = "曠職人員";
+            this.曠職人員.Width = 130;
+            // 
+            // 其它人員
+            // 
+            this.其它人員.HeaderText = "其它人員";
+            this.其它人員.Name = "其它人員";
+            this.其它人員.Width = 152;
             // 
             // lblRealUserShow
             // 
@@ -1558,6 +1636,184 @@
             this.其它.Name = "其它";
             this.其它.Width = 55;
             // 
+            // tpWPRManage
+            // 
+            this.tpWPRManage.Controls.Add(this.btnWPRM_All);
+            this.tpWPRManage.Controls.Add(this.btnWPRM_Condition);
+            this.tpWPRManage.Controls.Add(this.dgvWPR_DataShow);
+            this.tpWPRManage.Controls.Add(this.lblWPR_Info);
+            this.tpWPRManage.Controls.Add(this.txtWPR_EmpName);
+            this.tpWPRManage.Controls.Add(this.lblWPR_EmpName);
+            this.tpWPRManage.Controls.Add(this.txtWPR_EmpId);
+            this.tpWPRManage.Controls.Add(this.lstWPR_ListOther);
+            this.tpWPRManage.Controls.Add(this.lstWPR_List);
+            this.tpWPRManage.Controls.Add(this.lblWPR_Method);
+            this.tpWPRManage.Controls.Add(this.lblWPR_EmpId);
+            this.tpWPRManage.Controls.Add(this.dtpWPR_End);
+            this.tpWPRManage.Controls.Add(this.dtpWPR_Start);
+            this.tpWPRManage.Controls.Add(this.lblWPR_Date);
+            this.tpWPRManage.Location = new System.Drawing.Point(4, 22);
+            this.tpWPRManage.Name = "tpWPRManage";
+            this.tpWPRManage.Padding = new System.Windows.Forms.Padding(3);
+            this.tpWPRManage.Size = new System.Drawing.Size(792, 532);
+            this.tpWPRManage.TabIndex = 5;
+            this.tpWPRManage.Text = "出勤細部查詢";
+            this.tpWPRManage.UseVisualStyleBackColor = true;
+            // 
+            // btnWPRM_All
+            // 
+            this.btnWPRM_All.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnWPRM_All.Location = new System.Drawing.Point(490, 20);
+            this.btnWPRM_All.Name = "btnWPRM_All";
+            this.btnWPRM_All.Size = new System.Drawing.Size(100, 35);
+            this.btnWPRM_All.TabIndex = 101;
+            this.btnWPRM_All.Text = "查詢全部";
+            this.btnWPRM_All.UseVisualStyleBackColor = true;
+            this.btnWPRM_All.Click += new System.EventHandler(this.btnWPRM_All_Click);
+            // 
+            // btnWPRM_Condition
+            // 
+            this.btnWPRM_Condition.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnWPRM_Condition.Location = new System.Drawing.Point(615, 20);
+            this.btnWPRM_Condition.Name = "btnWPRM_Condition";
+            this.btnWPRM_Condition.Size = new System.Drawing.Size(100, 35);
+            this.btnWPRM_Condition.TabIndex = 100;
+            this.btnWPRM_Condition.Text = "依條件查詢";
+            this.btnWPRM_Condition.UseVisualStyleBackColor = true;
+            this.btnWPRM_Condition.Click += new System.EventHandler(this.btnWPRM_Condition_Click);
+            // 
+            // dgvWPR_DataShow
+            // 
+            this.dgvWPR_DataShow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvWPR_DataShow.Location = new System.Drawing.Point(201, 73);
+            this.dgvWPR_DataShow.Name = "dgvWPR_DataShow";
+            this.dgvWPR_DataShow.RowTemplate.Height = 24;
+            this.dgvWPR_DataShow.Size = new System.Drawing.Size(585, 454);
+            this.dgvWPR_DataShow.TabIndex = 99;
+            // 
+            // lblWPR_Info
+            // 
+            this.lblWPR_Info.AutoSize = true;
+            this.lblWPR_Info.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWPR_Info.Location = new System.Drawing.Point(395, 27);
+            this.lblWPR_Info.Name = "lblWPR_Info";
+            this.lblWPR_Info.Size = new System.Drawing.Size(89, 20);
+            this.lblWPR_Info.TabIndex = 98;
+            this.lblWPR_Info.Text = "（二擇一）";
+            // 
+            // txtWPR_EmpName
+            // 
+            this.txtWPR_EmpName.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.txtWPR_EmpName.Location = new System.Drawing.Point(269, 38);
+            this.txtWPR_EmpName.Name = "txtWPR_EmpName";
+            this.txtWPR_EmpName.Size = new System.Drawing.Size(120, 29);
+            this.txtWPR_EmpName.TabIndex = 97;
+            // 
+            // lblWPR_EmpName
+            // 
+            this.lblWPR_EmpName.AutoSize = true;
+            this.lblWPR_EmpName.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWPR_EmpName.Location = new System.Drawing.Point(219, 41);
+            this.lblWPR_EmpName.Name = "lblWPR_EmpName";
+            this.lblWPR_EmpName.Size = new System.Drawing.Size(57, 20);
+            this.lblWPR_EmpName.TabIndex = 96;
+            this.lblWPR_EmpName.Text = "姓名：";
+            // 
+            // txtWPR_EmpId
+            // 
+            this.txtWPR_EmpId.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.txtWPR_EmpId.Location = new System.Drawing.Point(269, 8);
+            this.txtWPR_EmpId.Name = "txtWPR_EmpId";
+            this.txtWPR_EmpId.Size = new System.Drawing.Size(120, 29);
+            this.txtWPR_EmpId.TabIndex = 95;
+            this.txtWPR_EmpId.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextOnlyEN);
+            // 
+            // lstWPR_ListOther
+            // 
+            this.lstWPR_ListOther.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lstWPR_ListOther.FormattingEnabled = true;
+            this.lstWPR_ListOther.ItemHeight = 20;
+            this.lstWPR_ListOther.Items.AddRange(new object[] {
+            "遲到",
+            "待補",
+            "公假",
+            "婚假",
+            "喪假",
+            "產假",
+            "颱風假",
+            "離職"});
+            this.lstWPR_ListOther.Location = new System.Drawing.Point(105, 130);
+            this.lstWPR_ListOther.Name = "lstWPR_ListOther";
+            this.lstWPR_ListOther.Size = new System.Drawing.Size(89, 184);
+            this.lstWPR_ListOther.TabIndex = 82;
+            // 
+            // lstWPR_List
+            // 
+            this.lstWPR_List.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lstWPR_List.FormattingEnabled = true;
+            this.lstWPR_List.ItemHeight = 20;
+            this.lstWPR_List.Items.AddRange(new object[] {
+            "正常出勤",
+            "排休",
+            "換休",
+            "調休",
+            "特休",
+            "病假",
+            "事假",
+            "曠職",
+            "其它"});
+            this.lstWPR_List.Location = new System.Drawing.Point(10, 130);
+            this.lstWPR_List.Name = "lstWPR_List";
+            this.lstWPR_List.Size = new System.Drawing.Size(89, 184);
+            this.lstWPR_List.TabIndex = 81;
+            this.lstWPR_List.SelectedIndexChanged += new System.EventHandler(this.lstWPR_List_SelectedIndexChanged);
+            // 
+            // lblWPR_Method
+            // 
+            this.lblWPR_Method.AutoSize = true;
+            this.lblWPR_Method.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWPR_Method.Location = new System.Drawing.Point(6, 108);
+            this.lblWPR_Method.Name = "lblWPR_Method";
+            this.lblWPR_Method.Size = new System.Drawing.Size(159, 19);
+            this.lblWPR_Method.TabIndex = 80;
+            this.lblWPR_Method.Text = "請選擇要查詢的條件：";
+            // 
+            // lblWPR_EmpId
+            // 
+            this.lblWPR_EmpId.AutoSize = true;
+            this.lblWPR_EmpId.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWPR_EmpId.Location = new System.Drawing.Point(219, 11);
+            this.lblWPR_EmpId.Name = "lblWPR_EmpId";
+            this.lblWPR_EmpId.Size = new System.Drawing.Size(57, 20);
+            this.lblWPR_EmpId.TabIndex = 78;
+            this.lblWPR_EmpId.Text = "工號：";
+            // 
+            // dtpWPR_End
+            // 
+            this.dtpWPR_End.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dtpWPR_End.Location = new System.Drawing.Point(10, 67);
+            this.dtpWPR_End.Name = "dtpWPR_End";
+            this.dtpWPR_End.Size = new System.Drawing.Size(185, 27);
+            this.dtpWPR_End.TabIndex = 6;
+            // 
+            // dtpWPR_Start
+            // 
+            this.dtpWPR_Start.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dtpWPR_Start.Location = new System.Drawing.Point(10, 34);
+            this.dtpWPR_Start.Name = "dtpWPR_Start";
+            this.dtpWPR_Start.Size = new System.Drawing.Size(185, 27);
+            this.dtpWPR_Start.TabIndex = 5;
+            // 
+            // lblWPR_Date
+            // 
+            this.lblWPR_Date.AutoSize = true;
+            this.lblWPR_Date.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblWPR_Date.Location = new System.Drawing.Point(6, 12);
+            this.lblWPR_Date.Name = "lblWPR_Date";
+            this.lblWPR_Date.Size = new System.Drawing.Size(189, 19);
+            this.lblWPR_Date.TabIndex = 4;
+            this.lblWPR_Date.Text = "請選擇要查詢的日期區間：";
+            // 
             // lblDateTime
             // 
             this.lblDateTime.AutoSize = true;
@@ -1602,66 +1858,6 @@
             // 
             this.tmrDateTime.Tick += new System.EventHandler(this.tmrDateTime_Tick);
             // 
-            // 部門_1
-            // 
-            this.部門_1.HeaderText = "部門";
-            this.部門_1.Name = "部門_1";
-            this.部門_1.Width = 70;
-            // 
-            // 新進人員
-            // 
-            this.新進人員.HeaderText = "新進人員";
-            this.新進人員.Name = "新進人員";
-            this.新進人員.Width = 130;
-            // 
-            // 排休人員
-            // 
-            this.排休人員.HeaderText = "排休人員";
-            this.排休人員.Name = "排休人員";
-            this.排休人員.Width = 130;
-            // 
-            // 換休人員
-            // 
-            this.換休人員.HeaderText = "換休人員";
-            this.換休人員.Name = "換休人員";
-            this.換休人員.Width = 130;
-            // 
-            // 調休人員
-            // 
-            this.調休人員.HeaderText = "調休人員";
-            this.調休人員.Name = "調休人員";
-            this.調休人員.Width = 130;
-            // 
-            // 特休人員
-            // 
-            this.特休人員.HeaderText = "特休人員";
-            this.特休人員.Name = "特休人員";
-            this.特休人員.Width = 130;
-            // 
-            // 病假人員
-            // 
-            this.病假人員.HeaderText = "病假人員";
-            this.病假人員.Name = "病假人員";
-            this.病假人員.Width = 130;
-            // 
-            // 事假人員
-            // 
-            this.事假人員.HeaderText = "事假人員";
-            this.事假人員.Name = "事假人員";
-            this.事假人員.Width = 130;
-            // 
-            // 曠職人員
-            // 
-            this.曠職人員.HeaderText = "曠職人員";
-            this.曠職人員.Name = "曠職人員";
-            this.曠職人員.Width = 130;
-            // 
-            // 其它人員
-            // 
-            this.其它人員.HeaderText = "其它人員";
-            this.其它人員.Name = "其它人員";
-            this.其它人員.Width = 152;
-            // 
             // BentoOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1677,7 +1873,7 @@
             this.MaximizeBox = false;
             this.Name = "BentoOrder";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "長鴻電子-每日報餐登記表 v3.3";
+            this.Text = "長鴻電子-每日報餐登記表 v3.4";
             this.Load += new System.EventHandler(this.BentoOrder_Load);
             this.tabBentoOrder.ResumeLayout(false);
             this.tpEveryDayOrder.ResumeLayout(false);
@@ -1695,6 +1891,9 @@
             this.tpWorkPeopleRefer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWPRshow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWorkPeopleReferShow)).EndInit();
+            this.tpWPRManage.ResumeLayout(false);
+            this.tpWPRManage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvWPR_DataShow)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1839,6 +2038,21 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn 事假人員;
         private System.Windows.Forms.DataGridViewTextBoxColumn 曠職人員;
         private System.Windows.Forms.DataGridViewTextBoxColumn 其它人員;
+        private System.Windows.Forms.TabPage tpWPRManage;
+        private System.Windows.Forms.Label lblWPR_EmpId;
+        private System.Windows.Forms.DateTimePicker dtpWPR_End;
+        private System.Windows.Forms.DateTimePicker dtpWPR_Start;
+        private System.Windows.Forms.Label lblWPR_Date;
+        private System.Windows.Forms.ListBox lstWPR_List;
+        private System.Windows.Forms.Label lblWPR_Method;
+        private System.Windows.Forms.ListBox lstWPR_ListOther;
+        private System.Windows.Forms.Button btnWPRM_Condition;
+        private System.Windows.Forms.DataGridView dgvWPR_DataShow;
+        private System.Windows.Forms.Label lblWPR_Info;
+        public System.Windows.Forms.TextBox txtWPR_EmpName;
+        private System.Windows.Forms.Label lblWPR_EmpName;
+        public System.Windows.Forms.TextBox txtWPR_EmpId;
+        private System.Windows.Forms.Button btnWPRM_All;
     }
 }
 

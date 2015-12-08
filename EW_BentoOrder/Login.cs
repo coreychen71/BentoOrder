@@ -60,6 +60,7 @@ namespace EW_BentoOrder
                 {
                     //將tabBentoOrder的tpAccount Page控件關聯性移除，透過此方式達到隱藏tpAccount Page的功能
                     bo.tabBentoOrder.Controls["tpAccount"].Parent = null;
+                    bo.tabBentoOrder.Controls["tpWPRManage"].Parent = null;
                     bo.btnSanitary.Enabled = false;
                     bo.btnBentoTelChange.Enabled = false;
                     bo.btnBentoTelChangeSave.Enabled = false;

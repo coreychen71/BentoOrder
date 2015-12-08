@@ -392,7 +392,8 @@ namespace EW_BentoOrder
                 "EndTime as '結束時間',Notation as '事由' from WorkPeople where DepartId='" +
                 Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "' and Class in (1,2) and " +
                 "(Status is null or Status in (0,1,2,3,4,5,6,7,8)) and Date between '" + DateTime.Now.
-                ToString("yyyy-MM-dd") + "' and '" + DateTime.Now.ToString("yyyy-MM-dd") + "' order by Class,EmpId asc";
+                ToString("yyyy-MM-dd") + "' and '" + DateTime.Now.ToString("yyyy-MM-dd") + "' order by Class,Status, " +
+                "EmpId asc";
             using (SqlConnection sqlcon = new SqlConnection(SQLCon))
             {
                 using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
@@ -576,18 +577,18 @@ namespace EW_BentoOrder
                         List<string> A6other = new List<string>();//事假原因+時間
                         List<string> A9other = new List<string>();//其它原因
                         //宣告假別陣列，每比對完一個部門就把該部門的各List值依序填入陣列
-                        string[] all1 = new string[10];
-                        string[] all2 = new string[10];
-                        string[] all3 = new string[10];
-                        string[] all4 = new string[10];
-                        string[] all5 = new string[10];
-                        string[] all6 = new string[10];
-                        string[] all7 = new string[10];
-                        string[] all8 = new string[10];
+                        string[] all1 = new string[20];
+                        string[] all2 = new string[20];
+                        string[] all3 = new string[20];
+                        string[] all4 = new string[20];
+                        string[] all5 = new string[20];
+                        string[] all6 = new string[20];
+                        string[] all7 = new string[20];
+                        string[] all8 = new string[20];
                         string[] all9 = new string[20];
-                        string[] all4other = new string[10];
-                        string[] all5other = new string[10];
-                        string[] all6other = new string[10];
+                        string[] all4other = new string[20];
+                        string[] all5other = new string[20];
+                        string[] all6other = new string[20];
                         string[] all9other = new string[20];
                         int x = 0;
                         for (x = 0; x < Read.Tables["AllUser"].Rows.Count; x++)
@@ -761,13 +762,19 @@ namespace EW_BentoOrder
                         //把各部門未出勤的人員依假別分類秀出
                         dgvWPRshow.Rows[i].Cells["排休人員"].Value = all1[0] + "  " + all1[1] + "  " + all1[2] +
                             "\r\n" + all1[3] + "  " + all1[4] + "  " + all1[5] + "\r\n" + all1[6] + "  " + all1[7] +
-                            "  " + all1[8] + "  " + all1[9];
+                            "  " + all1[8] + "  " + all1[9] + "  " + all1[10] + "  " + all1[11] + "\r\n" + all1[12] +
+                            "  " + all1[13] + "  " + all1[14] + "\r\n" + all1[15] + "  " + all1[16] + "  " + all1[17] +
+                            "  " + all1[18] + "  " + all1[19];
                         dgvWPRshow.Rows[i].Cells["換休人員"].Value = all2[0] + "  " + all2[1] + "  " + all2[2] +
                             "\r\n" + all2[3] + "  " + all2[4] + "  " + all2[5] + "\r\n" + all2[6] + "  " + all2[7] +
-                            "  " + all2[8] + "  " + all2[9];
+                            "  " + all2[8] + "  " + all2[9] + "  " + all2[10] + "  " + all2[11] + "\r\n" + all2[12] +
+                            "  " + all2[13] + "  " + all2[14] + "\r\n" + all2[15] + "  " + all2[16] + "  " + all2[17] +
+                            "  " + all2[18] + "  " + all2[19];
                         dgvWPRshow.Rows[i].Cells["調休人員"].Value = all3[0] + "  " + all3[1] + "  " + all3[2] +
                             "\r\n" + all3[3] + "  " + all3[4] + "  " + all3[5] + "\r\n" + all3[6] + "  " + all3[7] +
-                            "  " + all3[8] + "  " + all3[9];
+                            "  " + all3[8] + "  " + all3[9] + "  " + all3[10] + "  " + all3[11] + "\r\n" + all3[12] +
+                            "  " + all3[13] + "  " + all3[14] + "\r\n" + all3[15] + "  " + all3[16] + "  " + all3[17] +
+                            "  " + all3[18] + "  " + all3[19];
                         dgvWPRshow.Rows[i].Cells["特休人員"].Value = all4[0] + all4other[0] + "  " + all4[1] +
                             all4other[1] + "  " + all4[2] + all4other[2] + "  " + all4[3] + all4other[3] + "  " +
                             all4[4] + all4other[4] + "  " + all4[5] + all4other[5] + "  " + all4[6] + all4other[6] +
@@ -1130,6 +1137,264 @@ namespace EW_BentoOrder
             }
         }
 
+        /// <summary>
+        /// 限制TextBox只能輸入英文、數字和Backspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextOnlyEN(object sender, KeyPressEventArgs e)
+        {
+            int keyChar = (int)e.KeyChar;
+            int bk = (int)Keys.Back;
+            int aChar = (int)'a';//97
+            int zChar = (int)'z';//122
+            int AChar = (int)'A';//65
+            int ZChar = (int)'Z';//90
+            int zero = (int)'0';//48
+            int night = (int)'9';//57
+            if ((keyChar >= aChar && keyChar <= zChar) || (keyChar >= AChar && keyChar <= ZChar) ||
+                (keyChar >= zero && keyChar <= night) ||
+                keyChar == bk)
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// 出勤細部查詢(依條件)，Return DataTable
+        /// </summary>
+        /// <param name="dateStart">起始日</param>
+        /// <param name="dateEnd">截止日</param>
+        /// <param name="Status">出勤狀態</param>
+        /// <param name="Other">出勤-其它細項</param>
+        /// <param name="txtInput">要查詢的工號或姓名</param>
+        /// <returns></returns>
+        private DataTable WPR_Select(string dateStart, string dateEnd, string Status, string Other, string txtInput)
+        {
+            string SQLComm = "";
+            string emp = "";
+            string status = "";
+            DataSet Read = new DataSet();
+            if (txtWPR_EmpId.Text != "" & txtWPR_EmpName.Text == "")
+            {
+                emp = "EmpId";
+            }
+            else
+            {
+                emp = "EmpName";
+            }
+            if (Status == "正常出勤")
+            {
+                SQLComm = "select Date,EmpId,EmpName,DepartId,Class,Status,StartTime,EndTime,RegisterPeople," +
+                    "Notation from WorkPeople where Date between '" + dateStart + "' and '" + dateEnd +
+                    "' and Status is null and " + emp + "='" + txtInput + "' order by Date asc";
+            }
+            else
+            {
+                if (Status == "排休")
+                {
+                    status = "0";
+                }
+                else if (Status == "換休")
+                {
+                    status = "1";
+                }
+                else if (Status == "調休")
+                {
+                    status = "2";
+                }
+                else if (Status == "特休")
+                {
+                    status = "3";
+                }
+                else if (Status == "病假")
+                {
+                    status = "4";
+                }
+                else if (Status == "事假")
+                {
+                    status = "5";
+                }
+                else if (Status == "曠職")
+                {
+                    status = "6";
+                }
+                else if (Status == "其它")
+                {
+                    status = "8";
+                }
+                if (Status == "其它")
+                {
+                    SQLComm = "select Date,EmpId,EmpName,DepartId,Class,Status,StartTime,EndTime,RegisterPeople," +
+                        "Notation from WorkPeople where Date between '" + dateStart + "' and '" + dateEnd +
+                        "' and Status='" + status + "' and Notation='" + Other + "' and " + emp + "='" + txtInput +
+                        "' order by Date asc";
+                }
+                else
+                {
+                    SQLComm = "select Date,EmpId,EmpName,DepartId,Class,Status,StartTime,EndTime,RegisterPeople," +
+                        "Notation from WorkPeople where Date between '" + dateStart + "' and '" + dateEnd +
+                        "' and Status='" + status + "' and " + emp + "='" + txtInput + "' order by Date asc";
+                }
+            }
+            using (SqlConnection sqlcon = new SqlConnection(SQLCon))
+            {
+                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
+                {
+                    Load.Fill(Read, "Refer");
+                }
+            }
+            return Read.Tables["Refer"];
+        }
+
+        /// <summary>
+        /// 出勤細部查詢(全部)，Return DataTable
+        /// </summary>
+        /// <param name="dateStart">起始日</param>
+        /// <param name="dateEnd">截止日</param>
+        /// <param name="txtInput">要查詢的工號或姓名</param>
+        /// <returns></returns>
+        private DataTable WPR_AllSelect(string dateStart, string dateEnd, string txtInput)
+        {
+            string SQLComm = "";
+            string emp = "";
+            DataSet Read = new DataSet();
+            if (txtWPR_EmpId.Text != "" & txtWPR_EmpName.Text == "")
+            {
+                emp = "EmpId";
+            }
+            else
+            {
+                emp = "EmpName";
+            }
+            SQLComm="select Date,EmpId,EmpName,DepartId,Class,Status,StartTime,EndTime,RegisterPeople," +
+                    "Notation from WorkPeople where Date between '" + dateStart + "' and '" + dateEnd +
+                    "' and " + emp + "='" + txtInput + "' order by Date asc";
+            using (SqlConnection sqlcon = new SqlConnection(SQLCon))
+            {
+                using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
+                {
+                    Load.Fill(Read, "ReferAll");
+                }
+            }
+            return Read.Tables["ReferAll"];
+        }
+
+        /// <summary>
+        /// 出勤細部查詢結果重整格式後，讓DataGridView秀出
+        /// </summary>
+        /// <param name="reply">要重整格式的DataTable</param>
+        private void dgvWPR_DataShowReply(DataTable reply)
+        {
+            DataColumn dcClass = new DataColumn();
+            DataColumn dcStatus = new DataColumn();
+            dcClass.DataType = typeof(String);
+            dcClass.ColumnName = "班別";
+            dcStatus.DataType = typeof(String);
+            dcStatus.ColumnName = "出勤";
+            reply.Columns.Add(dcClass);
+            reply.Columns.Add(dcStatus);
+            for (int i = 0; i < reply.Rows.Count; i++)
+            {
+                for (int x = 0; x < departid.Count(); x++)
+                {
+                    if (reply.Rows[i][3].ToString() == departid[x])
+                    {
+                        reply.Rows[i][3] = depart[x];
+                    }
+                    if (reply.Rows[i][4].ToString() == "1")
+                    {
+                        reply.Rows[i][10] = "早班";
+                    }
+                    else
+                    {
+                        reply.Rows[i][10] = "晚班";
+                    }
+                    if (reply.Rows[i][5].ToString() == "")
+                    {
+                        reply.Rows[i][11] = "正常出勤";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "0")
+                    {
+                        reply.Rows[i][11] = "排休";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "1")
+                    {
+                        reply.Rows[i][11] = "換休";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "2")
+                    {
+                        reply.Rows[i][11] = "調休";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "3")
+                    {
+                        reply.Rows[i][11] = "特休";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "4")
+                    {
+                        reply.Rows[i][11] = "病假";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "5")
+                    {
+                        reply.Rows[i][11] = "事假";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "6")
+                    {
+                        reply.Rows[i][11] = "曠職";
+                    }
+                    else if (reply.Rows[i][5].ToString() == "8")
+                    {
+                        reply.Rows[i][11] = "其它";
+                    }
+                }
+            }
+            dgvWPR_DataShow.DataSource = reply;
+            dgvWPR_DataShow.Columns[4].Visible = false;
+            dgvWPR_DataShow.Columns[5].Visible = false;
+            dgvWPR_DataShow.Columns[10].DisplayIndex = 4;
+            dgvWPR_DataShow.Columns[11].DisplayIndex = 5;
+            dgvWPR_DataShow.Columns[0].HeaderText = "日期";
+            dgvWPR_DataShow.Columns[1].HeaderText = "工號";
+            dgvWPR_DataShow.Columns[2].HeaderText = "姓名";
+            dgvWPR_DataShow.Columns[3].HeaderText = "部門";
+            //dgvWPR_DataShow.Columns[4].HeaderText = "班別";
+            //dgvWPR_DataShow.Columns[5].HeaderText = "出勤";
+            dgvWPR_DataShow.Columns[6].HeaderText = "起始時間";
+            dgvWPR_DataShow.Columns[7].HeaderText = "結束時間";
+            dgvWPR_DataShow.Columns[8].HeaderText = "登記人";
+            dgvWPR_DataShow.Columns[9].HeaderText = "備註";
+            dgvWPR_DataShow.Columns[0].Width = 70;
+            dgvWPR_DataShow.Columns[1].Width = 60;
+            dgvWPR_DataShow.Columns[2].Width = 60;
+            dgvWPR_DataShow.Columns[3].Width = 60;
+            dgvWPR_DataShow.Columns[4].Width = 60;
+            dgvWPR_DataShow.Columns[5].Width = 60;
+            dgvWPR_DataShow.Columns[10].Width = 60;
+            dgvWPR_DataShow.Columns[11].Width = 60;
+            //設定欄位格式
+            for (int i = 0; i < dgvWPR_DataShow.Columns.Count; i++)
+            {
+                //DataGridView預設Column.SortMode = Automatic
+                //所以會預留排序圖像空間，所以標題文字會偏左，只要設不預留排序圖像空間，就能讓標題文字置中
+                dgvWPR_DataShow.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                //設定欄位標題置中
+                dgvWPR_DataShow.Columns[i].HeaderCell.Style.Alignment =
+                    DataGridViewContentAlignment.MiddleCenter;
+                //設定欄位置中
+                dgvWPR_DataShow.Columns[i].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.MiddleCenter;
+            }
+        }
+
+        /// <summary>
+        /// 限制TextBox只能輸入數字
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtNum_keyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
@@ -1149,6 +1414,7 @@ namespace EW_BentoOrder
             lblTodayAttendanceShow.Text = "";
             lblRealUserShow.Text = "";
             lblWorkPeopleShowNum.Text = "";
+            lstWPR_ListOther.Enabled = false;
             rtbOrderTimeIllustrate.ForeColor = Color.Red;
             lblOrderNumShow.Text = null;
             txtCompanyName.ReadOnly = true;
@@ -4060,6 +4326,87 @@ namespace EW_BentoOrder
                 SendMail.Dispose();
                 File.Delete(savefilepath);//刪除存放在系統個人暂存區的檔案
             }
+        }
+
+        //出勤細部查詢-假別清單若選擇[其它]則將其它清單選項Enabled
+        private void lstWPR_List_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(lstWPR_List.Text=="其它")
+            {
+                lstWPR_ListOther.Enabled = true;
+            }
+            else
+            {
+                lstWPR_ListOther.Enabled = false;
+            }
+        }
+
+        //出勤細部查詢-依條件查詢
+        private void btnWPRM_Condition_Click(object sender, EventArgs e)
+        {
+            if(lstWPR_List.Text=="")
+            {
+                MessageBox.Show("尚未選擇要查詢的條件", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if(txtWPR_EmpId.Text=="" & txtWPR_EmpName.Text=="")
+            {
+                MessageBox.Show("尚未輸入要查詢的工號或姓名", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if(txtWPR_EmpId.Text!="" & txtWPR_EmpName.Text!="")
+            {
+                MessageBox.Show("不得同時以工號和姓名為查詢條件", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (lstWPR_List.Text == "其它" & lstWPR_ListOther.Text == "")
+            {
+                MessageBox.Show("您選擇了［其它］，但未選擇［其它］相關條件", "訊息", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            else
+            {
+                string txtinput = "";
+                if (txtWPR_EmpId.Text != "" & txtWPR_EmpName.Text == "")
+                {
+                    txtinput = txtWPR_EmpId.Text;
+                }
+                else
+                {
+                    txtinput = txtWPR_EmpName.Text;
+                }
+                DataTable reply = WPR_Select(dtpWPR_Start.Value.ToString("yyyy-MM-dd"), dtpWPR_End.Value.
+                    ToString("yyyy-MM-dd"), lstWPR_List.Text, lstWPR_ListOther.Text, txtinput);
+                if(reply.Rows.Count==0 | reply==null)
+                {
+                    MessageBox.Show("查無資料！", "訊息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    dgvWPR_DataShow.DataSource = null;
+                    return;
+                }
+                else
+                {
+                    dgvWPR_DataShowReply(reply);
+                }
+            }
+        }
+
+        //出勤細部查詢-查詢全部
+        private void btnWPRM_All_Click(object sender, EventArgs e)
+        {
+            string txtinput = "";
+            if (txtWPR_EmpId.Text != "" & txtWPR_EmpName.Text != "")
+            {
+                MessageBox.Show("不得同時以工號和姓名為查詢條件", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (txtWPR_EmpId.Text != "" & txtWPR_EmpName.Text == "")
+            {
+                txtinput = txtWPR_EmpId.Text;
+            }
+            else
+            {
+                txtinput = txtWPR_EmpName.Text;
+            }
+            DataTable reply = WPR_AllSelect(dtpWPR_Start.Value.ToString("yyyy-MM-dd"), dtpWPR_End.Value.
+                ToString("yyyy-MM-dd"), txtinput);
+            dgvWPR_DataShowReply(reply);
         }
     }
 }
