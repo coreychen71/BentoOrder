@@ -867,6 +867,7 @@ namespace EW_BentoOrder
             float alluser = float.Parse(lblAllUserShow.Text.Trim(new char[] { '員' }));
             float[] num = new float[dgvWorkPeopleReferShow.Rows.Count - 1];//實到
             float[] num1 = new float[dgvWorkPeopleReferShow.Rows.Count - 1];//遲到
+            float[] num2 = new float[dgvWorkPeopleReferShow.Rows.Count - 1];//新進
             //將實到欄位數值帶入陣列
             for (int a = 0; a < dgvWorkPeopleReferShow.Rows.Count - 1; a++)
             {
@@ -892,8 +893,20 @@ namespace EW_BentoOrder
                     num1[a] = float.Parse(dgvWorkPeopleReferShow.Rows[a].Cells[3].Value.ToString());
                 }
             }
+            //將新進欄位數值帶入陣列
+            for (int a = 0; a < dgvWorkPeopleReferShow.Rows.Count - 1; a++)
+            {
+                if (dgvWorkPeopleReferShow.Rows[a].Cells[4].Value.ToString() == "")
+                {
+                    num2[a] = 0;
+                }
+                else
+                {
+                    num2[a] = float.Parse(dgvWorkPeopleReferShow.Rows[a].Cells[4].Value.ToString());
+                }
+            }
             //將陣列加總
-            float realusersum = num.Sum() + num1.Sum();
+            float realusersum = num.Sum() + num1.Sum() + num2.Sum();
             lblRealUserShow.Text = realusersum + "員";
             //實到人數除以應到人數
             float percent = realusersum / alluser;
