@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -11,7 +10,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
-
+                                                                                                                       
 namespace EW_BentoOrder
 {
     public partial class BentoOrder : Form
@@ -572,6 +571,7 @@ namespace EW_BentoOrder
                         List<string> A7 = new List<string>();
                         List<string> A8 = new List<string>();
                         List<string> A9 = new List<string>();
+                        List<string> A3other = new List<string>();//調休時間
                         List<string> A4other = new List<string>();//特休時間
                         List<string> A5other = new List<string>();//病假原因+時間
                         List<string> A6other = new List<string>();//事假原因+時間
@@ -586,6 +586,7 @@ namespace EW_BentoOrder
                         string[] all7 = new string[20];
                         string[] all8 = new string[20];
                         string[] all9 = new string[20];
+                        string[] all3other = new string[20];
                         string[] all4other = new string[20];
                         string[] all5other = new string[20];
                         string[] all6other = new string[20];
@@ -616,6 +617,8 @@ namespace EW_BentoOrder
                                 {
                                     a3++;
                                     A3.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
+                                    A3other.Add(Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "3")
                                 {
@@ -686,6 +689,10 @@ namespace EW_BentoOrder
                                 for (int A = 0; A < A3.Count(); A++)
                                 {
                                     all3[A] = A3[A];
+                                    if (A3other.Count() > 0)
+                                    {
+                                        all3other[A] = "（" + A3other[A] + "）";
+                                    }
                                 }
                             }
                             if (A4.Count() > 0)
@@ -770,11 +777,15 @@ namespace EW_BentoOrder
                             "  " + all2[8] + "  " + all2[9] + "  " + all2[10] + "  " + all2[11] + "\r\n" + all2[12] +
                             "  " + all2[13] + "  " + all2[14] + "\r\n" + all2[15] + "  " + all2[16] + "  " + all2[17] +
                             "  " + all2[18] + "  " + all2[19];
-                        dgvWPRshow.Rows[i].Cells["調休人員"].Value = all3[0] + "  " + all3[1] + "  " + all3[2] +
-                            "\r\n" + all3[3] + "  " + all3[4] + "  " + all3[5] + "\r\n" + all3[6] + "  " + all3[7] +
-                            "  " + all3[8] + "  " + all3[9] + "  " + all3[10] + "  " + all3[11] + "\r\n" + all3[12] +
-                            "  " + all3[13] + "  " + all3[14] + "\r\n" + all3[15] + "  " + all3[16] + "  " + all3[17] +
-                            "  " + all3[18] + "  " + all3[19];
+                        dgvWPRshow.Rows[i].Cells["調休人員"].Value = all3[0] + all3other[0] + "  " + all3[1] +
+                            all3other[1] + "  " + all3[2] + all3other[2] + "  " + all3[3] + all3other[3] + "  " +
+                            all3[4] + all3other[4] + "  " + all3[5] + all3other[5] + "  " + all3[6] + all3other[6] +
+                            "  " + all3[7] + all3other[7] + "  " + all3[8] + all3other[8] + "  " + all3[9] +
+                            all3other[9] + "  " + all3[10] + all3other[10] + "  " + all3[11] + all3other[11] + "  " +
+                            all3[12] + all3other[12] + "  " + all3[13] + all3other[13] + "  " + all3[14] +
+                            all3other[14] + "  " + all3[15] + all3other[15] + "  " + all3[16] + all3other[16] + "  " +
+                            all3[17] + all3other[17] + "  " + all3[18] + all3other[18] + "  " + all3[19] +
+                            all3other[19];
                         dgvWPRshow.Rows[i].Cells["特休人員"].Value = all4[0] + all4other[0] + "  " + all4[1] +
                             all4other[1] + "  " + all4[2] + all4other[2] + "  " + all4[3] + all4other[3] + "  " +
                             all4[4] + all4other[4] + "  " + all4[5] + all4other[5] + "  " + all4[6] + all4other[6] +
