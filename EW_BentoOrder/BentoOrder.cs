@@ -577,7 +577,7 @@ namespace EW_BentoOrder
                         List<string> A6other = new List<string>();//事假原因+時間
                         List<string> A9other = new List<string>();//其它原因
                         //宣告假別陣列，每比對完一個部門就把該部門的各List值依序填入陣列
-                        string[] all1 = new string[20];
+                        string[] all1 = new string[30];
                         string[] all2 = new string[20];
                         string[] all3 = new string[20];
                         string[] all4 = new string[20];
@@ -771,7 +771,8 @@ namespace EW_BentoOrder
                             "\r\n" + all1[3] + "  " + all1[4] + "  " + all1[5] + "\r\n" + all1[6] + "  " + all1[7] +
                             "  " + all1[8] + "  " + all1[9] + "  " + all1[10] + "  " + all1[11] + "\r\n" + all1[12] +
                             "  " + all1[13] + "  " + all1[14] + "\r\n" + all1[15] + "  " + all1[16] + "  " + all1[17] +
-                            "  " + all1[18] + "  " + all1[19];
+                            "  " + all1[18] + "  " + all1[19] + all1[20] + "  " + all1[21] + "  " + all1[22] + "\r\n" +
+                            all1[23] + "  " + all1[24];
                         dgvWPRshow.Rows[i].Cells["換休人員"].Value = all2[0] + "  " + all2[1] + "  " + all2[2] +
                             "\r\n" + all2[3] + "  " + all2[4] + "  " + all2[5] + "\r\n" + all2[6] + "  " + all2[7] +
                             "  " + all2[8] + "  " + all2[9] + "  " + all2[10] + "  " + all2[11] + "\r\n" + all2[12] +
