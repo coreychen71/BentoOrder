@@ -617,31 +617,31 @@ namespace EW_BentoOrder
                                 {
                                     a3++;
                                     A3.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
-                                    A3other.Add(Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
-                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
+                                    A3other.Add(Read.Tables["AllUser"].Rows[x][4].ToString().Substring(0,2) + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().Substring(0,2));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "3")
                                 {
                                     a4++;
                                     A4.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
-                                    A4other.Add(Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':','0') + "~" +
-                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
+                                    A4other.Add(Read.Tables["AllUser"].Rows[x][4].ToString().Substring(0,2) + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().Substring(0,2));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "4")
                                 {
                                     a5++;
                                     A5.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
                                     A5other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim() + " " +
-                                        Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
-                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
+                                        Read.Tables["AllUser"].Rows[x][4].ToString().Substring(0,2) + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().Substring(0,2));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "5")
                                 {
                                     a6++;
                                     A6.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
                                     A6other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim() + " " +
-                                        Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
-                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
+                                        Read.Tables["AllUser"].Rows[x][4].ToString().Substring(0,2) + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().Substring(0,2));
                                 }
                                 else if (Read.Tables["AllUser"].Rows[x][1].ToString().Trim() == "6")
                                 {
@@ -665,8 +665,8 @@ namespace EW_BentoOrder
                                     }
                                     A9.Add(Read.Tables["AllUser"].Rows[x][2].ToString().Trim());
                                     A9other.Add(Read.Tables["AllUser"].Rows[x][3].ToString().Trim() + " " +
-                                        Read.Tables["AllUser"].Rows[x][4].ToString().TrimEnd(':', '0') + "~" +
-                                        Read.Tables["AllUser"].Rows[x][5].ToString().TrimEnd(':', '0'));
+                                        Read.Tables["AllUser"].Rows[x][4].ToString().Substring(0,2) + "~" +
+                                        Read.Tables["AllUser"].Rows[x][5].ToString().Substring(0,2));
                                 }
                             }
                             //先判斷各假別的List是否有值，若有值，才開始將List的值塞進陣列
