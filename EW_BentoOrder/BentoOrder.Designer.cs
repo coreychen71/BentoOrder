@@ -1873,7 +1873,7 @@
             this.MaximizeBox = false;
             this.Name = "BentoOrder";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "長鴻電子-每日報餐登記表 v3.8";
+            this.Text = "長鴻電子-每日報餐登記表 v3.9";
             this.Load += new System.EventHandler(this.BentoOrder_Load);
             this.tabBentoOrder.ResumeLayout(false);
             this.tpEveryDayOrder.ResumeLayout(false);

@@ -840,7 +840,7 @@ namespace EW_BentoOrder
                         //將廠長室的在職人數減去2(掛名人員)
                         else if (Read.Tables["UserNum"].Rows[i][0].ToString().Trim() == "MM")
                         {
-                            int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1])) - 2;
+                            int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1])) - 1;
                             Read.Tables["UserNum"].Rows[i][1] = x.ToString();
                         }
                         //先將Read.Tables的部門代碼轉成部門名稱
