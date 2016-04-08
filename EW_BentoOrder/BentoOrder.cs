@@ -837,7 +837,7 @@ namespace EW_BentoOrder
                             int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1])) - 1;
                             Read.Tables["UserNum"].Rows[i][1] = x.ToString();
                         }
-                        //將廠長室的在職人數減去2(掛名人員)
+                        //將廠長室的在職人數減去1(掛名人員)
                         else if (Read.Tables["UserNum"].Rows[i][0].ToString().Trim() == "MM")
                         {
                             int x = (Convert.ToInt32(Read.Tables["UserNum"].Rows[i][1])) - 1;
@@ -1463,12 +1463,12 @@ namespace EW_BentoOrder
             SqlDataAdapter DepartId = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
-            //撈出在職中的人員，並將總數減3後，秀在Label.Text
+            //撈出在職中的人員，並將總數減2後，秀在Label.Text
             SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus=1";
             DepartId.SelectCommand = SqlComm;
             SqlComm.Connection = OpenSqlCon;
             DepartId.Fill(dpid, "AllUser");
-            lblAllUserShow.Text = Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 3) + "員";
+            lblAllUserShow.Text = Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 2) + "員";
             //Create new rows for dpid.tables
             DataRow dr = dpid.Tables["DepartId"].NewRow();
             //設定dr的資料
