@@ -585,12 +585,12 @@ namespace EW_BentoOrder
                         string[] all6 = new string[20];
                         string[] all7 = new string[20];
                         string[] all8 = new string[20];
-                        string[] all9 = new string[20];
+                        string[] all9 = new string[30];
                         string[] all3other = new string[20];
                         string[] all4other = new string[20];
                         string[] all5other = new string[20];
                         string[] all6other = new string[20];
-                        string[] all9other = new string[20];
+                        string[] all9other = new string[30];
                         int x = 0;
                         for (x = 0; x < Read.Tables["AllUser"].Rows.Count; x++)
                         {
@@ -816,7 +816,11 @@ namespace EW_BentoOrder
                             all9[12] + all9other[12] + "  " + all9[13] + all9other[13] + "  " + all9[14] +
                             all9other[14] + "  " + all9[15] + all9other[15] + "  " + all9[16] + all9other[16] + "  " +
                             all9[17] + all9other[17] + "  " + all9[18] + all9other[18] + "  " + all9[19] +
-                            all9other[19];
+                            all9other[19] + "  " + all9[20] + all9other[20] + "  " + all9[21] + all9other[21] +
+                            "  " + all9[22] + all9other[22] + "  " + all9[23] + all9other[23] + "  " + all9[24] +
+                            all9other[24] + "  " + all9[25] + all9other[25] + "  " + all9[26] + all9other[26] +
+                            "  " + all9[27] + all9other[27] + "  " + all9[28] + all9other[28] + "  " + all9[29] +
+                            all9other[29];
                     }
                 }
             }
