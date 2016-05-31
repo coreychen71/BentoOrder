@@ -1067,6 +1067,7 @@ namespace EW_BentoOrder
                             else
                             {
                                 worksheet1.get_Range(EnRange[i] + NumRange[x]).ColumnWidth = 20;
+                                worksheet1.get_Range(EnRange[i] + NumRange[x]).WrapText = true;//設定欄位自動換行
                             }
                             worksheet1.get_Range(EnRange[i] + NumRange[x]).VerticalAlignment = Excel.XlHAlign.
                                 xlHAlignCenter;
