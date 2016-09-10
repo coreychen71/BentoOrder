@@ -44,6 +44,10 @@ namespace EW_BentoOrder
         /// <param name="StatusNum">假別狀態代碼</param>
         private void InsertWPSTime_Status(int StatusNum)
         {
+            //***** 2016/09/10 新增時間起始與結束，供後續傳值使用 *****//
+            string tStart = string.Empty;
+            string tEnd = string.Empty;
+
             if (rdoClassAM.Checked == false & rdoClassPM.Checked == false)
             {
                 MessageBox.Show("尚未選擇班別！", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -113,12 +117,32 @@ namespace EW_BentoOrder
                     }
                     OpensqlConME.Close();
                     SelectTime st = new SelectTime();
-                    st.dtpWPSStart.Format = DateTimePickerFormat.Custom;
-                    st.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
-                    st.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
-                    st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                    if (StatusNum == 6)
+                    {
+                        st.dtpWPSStart.Value = DateTime.Today;
+                        st.dtpWPSEnd.Value = DateTime.Today;
+                        st.dtpWPSStart.CustomFormat = "yyyy-MM-dd";
+                        st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd";
+                        st.dtpWPSStart.Enabled = false;
+                        st.dtpWPSEnd.Enabled = false;
+                        tStart = "08:10";
+                        tEnd = "17:30";
+                        
+                    }
+                    else
+                    {
+                        st.dtpWPSStart.Format = DateTimePickerFormat.Custom;
+                        st.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
+                        st.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
+                        st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                        st.dtpWPSStart.Enabled = true;
+                        st.dtpWPSEnd.Enabled = true;
+                        tStart = st.dtpWPSStart.Value.ToString("HH:mm");
+                        tEnd = st.dtpWPSEnd.Value.ToString("HH:mm");
+                    }
                     if (st.ShowDialog() == DialogResult.OK)
                     {
+                        if(StatusNum==6)
                         OpensqlConME.Open();
                         int A = chklstWorkPeopleName.CheckedItems.Count;
                         for (int i = 0; i < A; i++)
@@ -134,9 +158,9 @@ namespace EW_BentoOrder
                                 ReadUser.Tables["ReadUser"].Rows[0][0].ToString().Trim() + "','" +
                                 ReadUser.Tables["ReadUser"].Rows[0][1].ToString().Trim() + "','" +
                                 Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "','" +
-                                Classnum + "'," + StatusNum + ",'" + st.dtpWPSStart.Value.ToString("HH:mm") + "','" +
-                                st.dtpWPSEnd.Value.ToString("HH:mm") + "','" + lblUserNameShow.Text.ToString() +
-                                "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
+                                Classnum + "'," + StatusNum + ",'" + tStart + "','" + tEnd + "','" +
+                                lblUserNameShow.Text.ToString() + "','" +
+                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')";
                             SqlComm.Connection = OpensqlConME;
                             SqlComm.ExecuteNonQuery();
                         }
