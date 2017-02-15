@@ -125,9 +125,6 @@ namespace EW_BentoOrder
                         st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd";
                         st.dtpWPSStart.Enabled = false;
                         st.dtpWPSEnd.Enabled = false;
-                        tStart = "08:10";
-                        tEnd = "17:30";
-                        
                     }
                     else
                     {
@@ -137,12 +134,19 @@ namespace EW_BentoOrder
                         st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
                         st.dtpWPSStart.Enabled = true;
                         st.dtpWPSEnd.Enabled = true;
-                        tStart = st.dtpWPSStart.Value.ToString("HH:mm");
-                        tEnd = st.dtpWPSEnd.Value.ToString("HH:mm");
                     }
                     if (st.ShowDialog() == DialogResult.OK)
                     {
-                        if(StatusNum==6)
+                        if (StatusNum == 6)
+                        {
+                            tStart = "08:10";
+                            tEnd = "17:30";
+                        }
+                        else
+                        {
+                            tStart = st.dtpWPSStart.Value.ToString("HH:mm");
+                            tEnd = st.dtpWPSEnd.Value.ToString("HH:mm");
+                        }
                         OpensqlConME.Open();
                         int A = chklstWorkPeopleName.CheckedItems.Count;
                         for (int i = 0; i < A; i++)
@@ -1488,7 +1492,7 @@ namespace EW_BentoOrder
             dgvWPRshow.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
             SqlComm.CommandText = "select distinct HPSdEmpInfo.DepartId,HPSdDepartTree.DepartName from HPSdEmpInfo," +
                 "HPSdDepartTree where HPSdEmpInfo.DepartId = HPSdDepartTree.DepartId and HPSdDepartTree.DepartId " +
-                "not in ('EF')";
+                "not in ('EF') and HPSdEmpInfo.DepartId not like '%B' order by HPSdEmpInfo.DepartId";
             SqlDataAdapter DepartId = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
