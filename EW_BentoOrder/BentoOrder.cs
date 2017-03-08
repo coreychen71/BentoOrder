@@ -853,8 +853,8 @@ namespace EW_BentoOrder
                 }
             }
             //撈出各部門在職中的人數，再指定給DataGridView的應到欄位秀出
-            SQLComm = "select distinct DepartId,COUNT(*) as Num from HPSdEmpInfo where EmpStatus=1 group by " +
-                        "DepartId";
+            SQLComm = "select distinct DepartId,COUNT(*) as Num from HPSdEmpInfo where EmpStatus=1 " +
+                "group by DepartId";
             using (SqlConnection sqlcon = new SqlConnection(SQLConERP))
             {
                 using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
@@ -1496,8 +1496,12 @@ namespace EW_BentoOrder
             SqlDataAdapter DepartId = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
+
             //撈出在職中的人員，並將總數減2後，秀在Label.Text
-            SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus=1";
+            //===== 2017/03/08 因應一例一休，人員打A、B卡，所以修正全廠在職人數的SQL語法，增加要乎略掉B卡部門的人員條件 =====
+            SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus=1 " +
+                "and DepartId not like '%B'";
+
             DepartId.SelectCommand = SqlComm;
             SqlComm.Connection = OpenSqlCon;
             DepartId.Fill(dpid, "AllUser");
