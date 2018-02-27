@@ -1497,7 +1497,7 @@ namespace EW_BentoOrder
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
 
-            //撈出在職中的人員，並將總數減2後，秀在Label.Text
+            //撈出在職中的人員，並將總數減3後，秀在Label.Text
             //===== 2017/03/08 因應一例一休，人員打A、B卡，所以修正全廠在職人數的SQL語法，增加要乎略掉B卡部門的人員條件 =====
             SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus=1 " +
                 "and DepartId not like '%B'";
@@ -1505,7 +1505,7 @@ namespace EW_BentoOrder
             DepartId.SelectCommand = SqlComm;
             SqlComm.Connection = OpenSqlCon;
             DepartId.Fill(dpid, "AllUser");
-            lblAllUserShow.Text = Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 2) + "員";
+            lblAllUserShow.Text = Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 3) + "員";
             //Create new rows for dpid.tables
             DataRow dr = dpid.Tables["DepartId"].NewRow();
             //設定dr的資料
