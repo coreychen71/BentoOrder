@@ -255,6 +255,7 @@
             this.btnSendSunday.TabIndex = 56;
             this.btnSendSunday.Text = "None";
             this.btnSendSunday.UseVisualStyleBackColor = true;
+            this.btnSendSunday.Visible = false;
             // 
             // btnSendM
             // 
@@ -347,6 +348,7 @@
             // 
             // btnSanitary
             // 
+            this.btnSanitary.Enabled = false;
             this.btnSanitary.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.btnSanitary.Location = new System.Drawing.Point(270, 494);
             this.btnSanitary.Name = "btnSanitary";
@@ -354,6 +356,7 @@
             this.btnSanitary.TabIndex = 43;
             this.btnSanitary.Text = "聚豐-清潔人員";
             this.btnSanitary.UseVisualStyleBackColor = true;
+            this.btnSanitary.Visible = false;
             this.btnSanitary.Click += new System.EventHandler(this.btnSanitary_Click);
             // 
             // chkVegetableFood
@@ -1873,7 +1876,7 @@
             this.MaximizeBox = false;
             this.Name = "BentoOrder";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "長鴻電子-每日出勤&報餐登記表 v4.7";
+            this.Text = "長鴻電子-每日出勤&報餐登記表 v4.8";
             this.Load += new System.EventHandler(this.BentoOrder_Load);
             this.tabBentoOrder.ResumeLayout(false);
             this.tpEveryDayOrder.ResumeLayout(false);

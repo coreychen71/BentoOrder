@@ -119,8 +119,8 @@ namespace EW_BentoOrder
                     SelectTime st = new SelectTime();
                     if (StatusNum == 6)
                     {
-                        st.dtpWPSStart.Value = DateTime.Today;
-                        st.dtpWPSEnd.Value = DateTime.Today;
+                        st.dtpWPSStart.Value = DateTime.Now;
+                        st.dtpWPSEnd.Value = DateTime.Now;
                         st.dtpWPSStart.CustomFormat = "yyyy-MM-dd";
                         st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd";
                         st.dtpWPSStart.Enabled = false;
@@ -130,8 +130,8 @@ namespace EW_BentoOrder
                     {
                         st.dtpWPSStart.Format = DateTimePickerFormat.Custom;
                         st.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
-                        st.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
-                        st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                        st.dtpWPSStart.CustomFormat = "yyyy-MM-dd 08:10";
+                        st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd 17:30";
                         st.dtpWPSStart.Enabled = true;
                         st.dtpWPSEnd.Enabled = true;
                     }
@@ -256,8 +256,8 @@ namespace EW_BentoOrder
                     SelectTimeTxt st = new SelectTimeTxt();
                     st.dtpWPSStart.Format = DateTimePickerFormat.Custom;
                     st.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
-                    st.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
-                    st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                    st.dtpWPSStart.CustomFormat = "yyyy-MM-dd 08:10";
+                    st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd 17:30";
                     if (st.ShowDialog() == DialogResult.OK)
                     {
                         OpensqlConME.Open();
@@ -1497,15 +1497,15 @@ namespace EW_BentoOrder
             DataSet dpid = new DataSet();
             DepartId.Fill(dpid, "DepartId");
 
-            //撈出在職中的人員，並將總數減3後，秀在Label.Text
+            //撈出在職中的人員，秀在Label.Text
             //===== 2017/03/08 因應一例一休，人員打A、B卡，所以修正全廠在職人數的SQL語法，增加要乎略掉B卡部門的人員條件 =====
-            SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus=1 " +
-                "and DepartId not like '%B'";
+            SqlComm.CommandText = "select EmpName from HPSdEmpInfo where EmpStatus = 1 and " +
+                "(EmpType = 1 or EmpId in ('ES001','ES002','ES003','EP003'))";
 
             DepartId.SelectCommand = SqlComm;
             SqlComm.Connection = OpenSqlCon;
             DepartId.Fill(dpid, "AllUser");
-            lblAllUserShow.Text = Convert.ToString(dpid.Tables["AllUser"].Rows.Count - 3) + "員";
+            lblAllUserShow.Text = Convert.ToString(dpid.Tables["AllUser"].Rows.Count) + "員";
             //Create new rows for dpid.tables
             DataRow dr = dpid.Tables["DepartId"].NewRow();
             //設定dr的資料
@@ -1571,7 +1571,8 @@ namespace EW_BentoOrder
                 Load.Fill(Read, "DepartId");
                 //再用部門代號撈出仍在職中的人員工號、姓名
                 SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where DepartId='" +
-                    Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpStatus='1'";
+                    Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpStatus='1' and " +
+                    "(EmpType = 1 or EmpId in ('ES001','ES002','ES003','EP003'))";
                 SqlDataAdapter ReadEmpInfo = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                 DataSet HPSdEmpInfo = new DataSet();
                 ReadEmpInfo.Fill(HPSdEmpInfo, "EmpInfo");
@@ -3914,7 +3915,8 @@ namespace EW_BentoOrder
                 Load.Fill(Read, "DepartId");
                 //再用部門代號撈出仍在職中的人員工號、姓名
                 SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where DepartId='" +
-                    Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpStatus='1'";
+                    Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "' and EmpStatus='1' and " +
+                    "(EmpType = 1 or EmpId in ('ES001','ES002','ES003','EP003'))";
                 SqlDataAdapter ReadEmpInfo = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                 DataSet HPSdEmpInfo = new DataSet();
                 ReadEmpInfo.Fill(HPSdEmpInfo, "EmpInfo");
@@ -4260,8 +4262,8 @@ namespace EW_BentoOrder
                     SelectTimeOther sto = new SelectTimeOther();
                     sto.dtpWPSStart.Format = DateTimePickerFormat.Custom;
                     sto.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
-                    sto.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
-                    sto.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                    sto.dtpWPSStart.CustomFormat = "yyyy-MM-dd 08:10";
+                    sto.dtpWPSEnd.CustomFormat = "yyyy-MM-dd 17:30";
                     if (sto.ShowDialog() == DialogResult.OK)
                     {
                         OpensqlConME.Open();
