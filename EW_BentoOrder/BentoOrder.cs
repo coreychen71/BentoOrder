@@ -130,8 +130,10 @@ namespace EW_BentoOrder
                     {
                         st.dtpWPSStart.Format = DateTimePickerFormat.Custom;
                         st.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
-                        st.dtpWPSStart.CustomFormat = "yyyy-MM-dd 08:10";
-                        st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd 17:30";
+                        st.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
+                        st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                        st.dtpWPSStart.Value = DateTime.Parse("08:10");
+                        st.dtpWPSEnd.Value = DateTime.Parse("17:30");
                         st.dtpWPSStart.Enabled = true;
                         st.dtpWPSEnd.Enabled = true;
                     }
@@ -256,8 +258,10 @@ namespace EW_BentoOrder
                     SelectTimeTxt st = new SelectTimeTxt();
                     st.dtpWPSStart.Format = DateTimePickerFormat.Custom;
                     st.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
-                    st.dtpWPSStart.CustomFormat = "yyyy-MM-dd 08:10";
-                    st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd 17:30";
+                    st.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
+                    st.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                    st.dtpWPSStart.Value = DateTime.Parse("08:10");
+                    st.dtpWPSEnd.Value = DateTime.Parse("17:30");
                     if (st.ShowDialog() == DialogResult.OK)
                     {
                         OpensqlConME.Open();
@@ -4262,8 +4266,10 @@ namespace EW_BentoOrder
                     SelectTimeOther sto = new SelectTimeOther();
                     sto.dtpWPSStart.Format = DateTimePickerFormat.Custom;
                     sto.dtpWPSEnd.Format = DateTimePickerFormat.Custom;
-                    sto.dtpWPSStart.CustomFormat = "yyyy-MM-dd 08:10";
-                    sto.dtpWPSEnd.CustomFormat = "yyyy-MM-dd 17:30";
+                    sto.dtpWPSStart.CustomFormat = "yyyy-MM-dd HH:mm";
+                    sto.dtpWPSEnd.CustomFormat = "yyyy-MM-dd HH:mm";
+                    sto.dtpWPSStart.Value = DateTime.Parse("08:10");
+                    sto.dtpWPSEnd.Value = DateTime.Parse("17:30");
                     if (sto.ShowDialog() == DialogResult.OK)
                     {
                         OpensqlConME.Open();
