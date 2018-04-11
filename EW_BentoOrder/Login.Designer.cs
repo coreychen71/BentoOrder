@@ -113,7 +113,7 @@
             this.MaximizeBox = false;
             this.Name = "Login";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Login v4.8";
+            this.Text = "Login v4.9";
             this.ResumeLayout(false);
             this.PerformLayout();
 

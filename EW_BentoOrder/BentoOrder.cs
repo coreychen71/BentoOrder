@@ -154,7 +154,8 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                                chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) +
+                                "' and DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
@@ -269,7 +270,8 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                                chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) +
+                                "' and DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
@@ -376,7 +378,8 @@ namespace EW_BentoOrder
                     for (int i = 0; i < A; i++)
                     {
                         SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                            chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                            chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "' " +
+                            "and DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "'";
                         SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                         DataSet ReadUser = new DataSet();
                         ReadNI.Fill(ReadUser, "ReadUser");
@@ -1687,7 +1690,8 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "' and " +
+                                "DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
@@ -1713,7 +1717,8 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "' and " +
+                                "DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
@@ -1739,7 +1744,8 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                                chklstName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "' and " +
+                                "DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString() + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
@@ -4030,7 +4036,8 @@ namespace EW_BentoOrder
                     for (int i = 0; i < A; i++)
                     {
                         SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                            chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                            chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "' " +
+                            "and DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "'";
                         SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                         DataSet ReadUser = new DataSet();
                         ReadNI.Fill(ReadUser, "ReadUser");
@@ -4277,7 +4284,8 @@ namespace EW_BentoOrder
                         for (int i = 0; i < A; i++)
                         {
                             SqlComm.CommandText = "select EmpId,EmpName from HPSdEmpInfo where EmpName=N'" +
-                                chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) + "'";
+                                chklstWorkPeopleName.CheckedItems[i].ToString().Trim().TrimStart(clear.ToArray()) +
+                                "' and DepartId = '" + Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "'";
                             SqlDataAdapter ReadNI = new SqlDataAdapter(SqlComm.CommandText, OpenSqlCon);
                             DataSet ReadUser = new DataSet();
                             ReadNI.Fill(ReadUser, "ReadUser");
