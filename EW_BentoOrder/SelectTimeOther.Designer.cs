@@ -55,6 +55,7 @@
             "婚假",
             "喪假",
             "產假",
+            "陪產假",
             "颱風假",
             "離職"});
             this.cboWorkPeopleOther.Location = new System.Drawing.Point(107, 107);
