@@ -17,7 +17,7 @@ namespace EW_BentoOrder
             InitializeComponent();
         }
 
-        SqlConnection OpenSqlCon = new SqlConnection("server=ERP;database=EW;uid=JSIS;pwd=JSIS");
+        SqlConnection OpenSqlCon = new SqlConnection("server=192.168.1.39;database=EW;uid=JSIS;pwd=JSIS");
         SqlCommand SqlComm = new SqlCommand();
 
         private void btnExit_Click(object sender, EventArgs e)

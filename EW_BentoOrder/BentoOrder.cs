@@ -15,19 +15,19 @@ namespace EW_BentoOrder
 {
     public partial class BentoOrder : Form
     {
-        SqlConnection OpenSqlCon = new SqlConnection("server=ERP;database=EW;uid=JSIS;pwd=JSIS");
-        SqlConnection OpensqlConME = new SqlConnection("server=EWNAS;database=ME;uid=me;pwd=2dae5na");
+        SqlConnection OpenSqlCon = new SqlConnection("server=192.168.1.39;database=EW;uid=JSIS;pwd=JSIS");
+        SqlConnection OpensqlConME = new SqlConnection("server=192.168.1.248;database=ME;uid=me;pwd=2dae5na");
         SqlCommand SqlComm = new SqlCommand();
-        string SQLCon = "server=EWNAS;database=ME;uid=me;pwd=2dae5na";
-        string SQLConERP="server=ERP;database=EW;uid=JSIS;pwd=JSIS";
+        string SQLCon = "server=192.168.1.248;database=ME;uid=me;pwd=2dae5na";
+        string SQLConERP="server=192.168.1.39;database=EW;uid=JSIS;pwd=JSIS";
         //宣告後續要將CheckBox.Item的多餘字元移除的字串
         string clear = "ACDEFGILMQSTPR0123456789";
         //宣告部門字串陣列
-        string[] depart = { "總經理室", "業務部", "管理部", "財務部", "工程部", "製造研發部", "品保部", "廠長室", "壓合課",
-            "生管課", "測試課", "品檢課", "乾膜課", "防焊課", "鑽孔課", "成型課" };
+        string[] depart = { "EW長鴻","總經理室", "業務部", "管理部", "財務部", "工程部", "製造研發部", "品保部", "廠長室",
+            "壓合課", "生管課", "測試課", "品檢課", "乾膜課", "防焊課", "鑽孔課", "成型課" };
         //宣告部門ID字串陣列，注意：初始值的排序需要與部門字串一樣
-        string[] departid = { "EG", "ES", "EM", "EA", "EE", "ER", "EQ", "MM", "EL", "EP", "ET", "EI", "FF", "LF", "DF",
-            "CF" };
+        string[] departid = { "EW", "EG", "ES", "EM", "EA", "EE", "ER", "EQ", "MM", "EL", "EP", "ET", "EI", "FF",
+            "LF", "DF", "CF" };
         //宣告每日出勤登記的時間
         public string st1 = "09:00";
         public string st2 = "09:00";
@@ -410,7 +410,7 @@ namespace EW_BentoOrder
         /// <param name="departname">ComboBox.部門</param>
         private void RenewWorkPeople(string departname)
         {
-            string SQLCon = "server=ERP;database=EW;uid=JSIS;pwd=JSIS";
+            string SQLCon = "server=192.168.1.39;database=EW;uid=JSIS;pwd=JSIS";
             string SQLComm = "select DepartId from HPSdDepartTree where DepartName='" + cboSelectWorkPeopleDepart.Text +
                 "'";
             DataSet Read = new DataSet();
@@ -421,7 +421,7 @@ namespace EW_BentoOrder
                     Load.Fill(Read, "DepartId");
                 }
             }
-            SQLCon = "server=EWNAS;database=ME;uid=me;pwd=2dae5na";
+            SQLCon = "server=192.168.1.248;database=ME;uid=me;pwd=2dae5na";
             SQLComm = "select Date as '日期',EmpId as '工號',EmpName as '姓名',Class,Status,StartTime as '起始時間'," +
                 "EndTime as '結束時間',Notation as '事由' from WorkPeople where DepartId='" +
                 Read.Tables["DepartId"].Rows[0]["DepartId"].ToString().Trim() + "' and Class in (1,2) and " +
@@ -573,7 +573,7 @@ namespace EW_BentoOrder
             }
             //撈出當天的出勤資料，不分早晚班
             string SQLComm = "select DepartId,Status,EmpName,Notation,StartTime,EndTime from WorkPeople where Class " +
-                "in (1,2) and Date='" + DateTime.Now.Date.ToString("yyyy-MM-dd") + "'";
+                "in (1,2) and Date='" + DateTime.Now.ToString("yyyy-MM-dd") + "'";
             using (SqlConnection sqlcon = new SqlConnection(SQLCon))
             {
                 using (SqlDataAdapter Load = new SqlDataAdapter(SQLComm, sqlcon))
@@ -613,18 +613,18 @@ namespace EW_BentoOrder
                         List<string> A9other = new List<string>();//其它原因
                         //宣告假別陣列，每比對完一個部門就把該部門的各List值依序填入陣列
                         string[] all1 = new string[30];
-                        string[] all2 = new string[20];
-                        string[] all3 = new string[20];
-                        string[] all4 = new string[20];
-                        string[] all5 = new string[20];
-                        string[] all6 = new string[20];
-                        string[] all7 = new string[20];
-                        string[] all8 = new string[20];
+                        string[] all2 = new string[30];
+                        string[] all3 = new string[30];
+                        string[] all4 = new string[30];
+                        string[] all5 = new string[30];
+                        string[] all6 = new string[30];
+                        string[] all7 = new string[30];
+                        string[] all8 = new string[30];
                         string[] all9 = new string[30];
-                        string[] all3other = new string[20];
-                        string[] all4other = new string[20];
-                        string[] all5other = new string[20];
-                        string[] all6other = new string[20];
+                        string[] all3other = new string[30];
+                        string[] all4other = new string[30];
+                        string[] all5other = new string[30];
+                        string[] all6other = new string[30];
                         string[] all9other = new string[30];
                         int x = 0;
                         for (x = 0; x < Read.Tables["AllUser"].Rows.Count; x++)
@@ -986,7 +986,7 @@ namespace EW_BentoOrder
                 Excel._Worksheet worksheet2 = excel.Worksheets.Add();
                 //宣告表示欄位的英文和數字陣列
                 string[] EnRange = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M" };
-                string[] NumRange = new string[17];
+                string[] NumRange = new string[18];
                 //將數字帶入NumRange字串陣列
                 int q = 0;
                 for (int i = 0; i < NumRange.Count(); i++)
